@@ -1,0 +1,17 @@
+{
+	"folders":
+	[
+		{
+            "folder_exclude_patterns":
+            [
+                "_build",
+                "deps",
+                ".elixir_ls",
+                "rootfs_overlay",
+                "Mnesia.nonode@nohost",
+                "mnesia_disc_dump"
+            ],
+			"path": "."
+		}
+	]
+}
