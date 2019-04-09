@@ -1,6 +1,6 @@
 BURN_DEVICE ?= /dev/null
 
-deps:
+mixdeps:
 	export MIX_TARGET=rpi0 \
 	&& mix deps.get
 
