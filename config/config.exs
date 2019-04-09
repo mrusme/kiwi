@@ -6,7 +6,10 @@ config :shoehorn,
     init: [:nerves_runtime, :nerves_init_gadget],
     app: Mix.Project.config()[:app]
 
-config :logger, backends: [RingLogger]
+config :logger,
+    level: :debug,
+    backends: [RingLogger]
+    # backends: [:console]
 
 keys =
     [
@@ -30,11 +33,31 @@ config :nerves_firmware_ssh,
 node_name = if Mix.env() != :prod, do: "kiwi"
 
 config :nerves_init_gadget,
-    ifname: "usb0",
+    ifname: "wlan0",
     address_method: :dhcpd,
     mdns_domain: "nerves.local",
     node_name: node_name,
     node_host: :mdns_domain
+
+key_mgmt = System.get_env("NERVES_NETWORK_KEY_MGMT") || "WPA-PSK"
+config :nerves_network, :default,
+    wlan0: [
+        ssid: System.get_env("NERVES_NETWORK_SSID"),
+        psk: System.get_env("NERVES_NETWORK_PSK"),
+        key_mgmt: String.to_atom(key_mgmt)
+    ]
+
+config :kiwi, Kiwi.Server,
+    adapter: Plug.Cowboy,
+    plug: Kiwi.Api,
+    scheme: :http,
+    ip: {0,0,0,0},
+    port: 8080
+
+config :paperwork_service_configs,
+    maru_servers: [Paperwork.Server]
+
+config :mnesia, :dir, System.get_env("MNESIA_DUMP_DIRECTORY") || '/root/mnesia_disc_dump'
 
 # Import target specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
