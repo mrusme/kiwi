@@ -24,7 +24,7 @@ defmodule Kiwi.MixProject do
     def application do
         [
             mod: {Kiwi.Application, []},
-            extra_applications: [:logger, :runtime_tools]
+            extra_applications: [:logger, :runtime_tools, :mnesia]
         ]
     end
 
@@ -35,6 +35,13 @@ defmodule Kiwi.MixProject do
             {:shoehorn, "~> 0.4"},
             {:ring_logger, "~> 0.6"},
             {:toolshed, "~> 0.2"},
+            {:circuits_gpio, "~> 0.4.1"},
+            {:circuits_spi, "~> 0.1.3"},
+            {:circuits_i2c, "~> 0.3.3"},
+            {:maru, "~> 0.14.0-pre.1"},
+            {:plug_cowboy, "~> 2.0"},
+            {:jason, "~> 1.1"},
+            {:corsica, "~> 1.1"},
 
             # Dependencies for all targets except :host
             {:nerves_runtime, "~> 0.6", targets: @all_targets},
