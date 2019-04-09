@@ -15,3 +15,6 @@
 
 # If the VM crashes, it generates a dump, let's ignore it too.
 erl_crash.dump
+*.sublime-workspace
+/mnesia_disc_dump
+/Mnesia.nonode@nohost
