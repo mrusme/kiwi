@@ -38,6 +38,13 @@ defmodule Kiwi.Api do
         |> resp({:badrequest, %{param: e.param, reason: e.reason}})
     end
 
+    rescue_from Maru.Exceptions.Validation, as: e do
+        IO.inspect e
+
+        conn
+        |> resp({:badrequest, %{param: e.param, reason: e.validator}})
+    end
+
     rescue_from :all, as: e do
         IO.inspect e
 
