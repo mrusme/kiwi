@@ -3,6 +3,61 @@ defmodule Kiwi.Collection do
     require Jason
     alias :mnesia, as: Mnesia
 
+    def init_mnesia_directory() do
+        case File.exists?(Mnesia.system_info(:directory)) do
+            true -> :ok
+            false ->
+                with \
+                    :stopped <- Mnesia.stop(),
+                    :ok <- Logger.debug("Mnesiahack: Mnesia stopped."),
+                    :ok <- :timer.sleep(:timer.seconds(1)),
+                    :ok <- Mnesia.delete_schema([node()]),
+                    :ok <- Logger.debug("Mnesiahack: Schema deleted."),
+                    :ok <- :timer.sleep(:timer.seconds(1)),
+                    :ok <- File.mkdir(Mnesia.system_info(:directory))
+                do
+                    :ok
+                else
+                    other -> {:error, other}
+                end
+        end
+    end
+
+    def init_mnesia_schema() do
+        case Mnesia.create_schema([node()]) do
+            :ok -> :ok
+            {:error, {_, {:already_exists, _}}} -> :ok
+            other -> other
+        end
+    end
+
+    # This Mnesia bullshit has cost me two nights of my life and roughly $23 for coffee that I ain't going to
+    # get back. At least let me enjoy ranting and making fun of Mnesia's stupid face. Such a stupid face.
+    def init_collection() do
+        with \
+            :ok <- init_mnesia_directory(),
+            :ok <- Logger.debug("Mnesiahack: Directory created."),
+            :ok <- :timer.sleep(:timer.seconds(1)),
+            :stopped <- Mnesia.stop(),
+            :ok <- Logger.debug("Mnesiahack: Mnesia stopped, maybe again, whatever."),
+            :ok <- :timer.sleep(:timer.seconds(1)),
+            :ok <- init_mnesia_schema(),
+            :ok <- Logger.debug("Mnesiahack: Schema initialized, at least if it wasn't there before."),
+            :ok <- :timer.sleep(:timer.seconds(1)),
+            :ok <- Mnesia.start(),
+            :ok <- Logger.debug("Mnesiahack: Mnesia started."),
+            :ok <- :timer.sleep(:timer.seconds(1))
+        do
+            Logger.debug("Mnesiahack: All done.")
+            :ok
+        else
+            err ->
+                Logger.error "Mnesia has failed, again!"
+                Logger.debug "#{inspect err}"
+                err
+        end
+    end
+
     defmacro __using__(_opts) do
         quote do
             defimpl Jason.Encoder, for: [__MODULE__] do
@@ -23,35 +78,16 @@ defmodule Kiwi.Collection do
             end
             def keys_to_atoms(value), do: value
 
-            defp get_collection_keys() do
+            def get_collection_keys() do
                 %__MODULE__{} |> Map.delete(:__struct__) |> Map.keys
             end
 
-            defp init_mnesia_schema() do
-                case Mnesia.create_schema([node()]) do
-                    :ok -> :ok
-                    {:error, {_, {:already_exists, _}}} -> :ok
-                    other -> other
-                end
-            end
 
-            defp init_mnesia_table() do
-                case Mnesia.create_table(__MODULE__, [attributes: get_collection_keys(), disc_copies: [Node.self()] ]) do
+            def init_mnesia_table() do
+                case Mnesia.create_table(__MODULE__, [attributes: get_collection_keys(), disc_copies: [node()] ]) do
                     {:atomic, :ok} -> :ok
                     {:aborted, {:already_exists, _}} -> :ok
                     other -> other
-                end
-            end
-
-            def init() do
-                with \
-                    :ok <- init_mnesia_schema(),
-                    :ok <- Mnesia.start(),
-                    :ok <- init_mnesia_table()
-                do
-                    :ok
-                else
-                    err -> err
                 end
             end
 
