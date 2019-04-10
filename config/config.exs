@@ -54,7 +54,7 @@ config :kiwi, Kiwi.Server,
     ip: {0,0,0,0},
     port: 8080
 
-config :paperwork_service_configs,
+config :kiwi,
     maru_servers: [Paperwork.Server]
 
 config :mnesia, :dir, System.get_env("MNESIA_DUMP_DIRECTORY") || '/root/mnesia_disc_dump'
