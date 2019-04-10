@@ -43,6 +43,7 @@ defmodule Kiwi.MixProject do
             {:plug_cowboy, "~> 2.0"},
             {:jason, "~> 1.1"},
             {:corsica, "~> 1.1"},
+            {:mojito, "~> 0.1.1"},
 
             # Dependencies for all targets except :host
             {:nerves_runtime, "~> 0.6", targets: @all_targets},
