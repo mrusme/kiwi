@@ -18,3 +18,6 @@ erl_crash.dump
 *.sublime-workspace
 /mnesia_disc_dump
 /Mnesia.nonode@nohost
+.DS_Store
+Mnesia.*
+MnesiaCore.*
