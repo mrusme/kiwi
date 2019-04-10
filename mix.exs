@@ -24,7 +24,8 @@ defmodule Kiwi.MixProject do
     def application do
         [
             mod: {Kiwi.Application, []},
-            extra_applications: [:logger, :runtime_tools, :mnesia]
+            extra_applications: [:logger, :runtime_tools, :mnesia],
+            # included_applications: [:mnesia]
         ]
     end
 
