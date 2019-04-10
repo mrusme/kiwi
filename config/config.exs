@@ -57,7 +57,11 @@ config :kiwi, Kiwi.Server,
 config :kiwi,
     maru_servers: [Paperwork.Server]
 
-config :mnesia, :dir, System.get_env("MNESIA_DUMP_DIRECTORY") || '/root/mnesia_disc_dump'
+config :mnesia,
+    dir: String.to_charlist(System.get_env("MNESIA_DUMP_DIRECTORY") || "/root/mnesia_disc_dump"),
+    debug: :debug,
+    # dump_disc_copies_at_startup: true
+    schema_location: :opt_disc
 
 # Import target specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
