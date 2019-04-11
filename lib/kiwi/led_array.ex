@@ -39,6 +39,17 @@ defmodule Kiwi.LedArray do
         {:ok, %Kiwi.LedArray{ledarray | led_array: updated_led_array}}
     end
 
+    def from_led_collection(%Kiwi.LedArray{} = ledarray) do
+        {:ok, leds} = Kiwi.Collection.Led.all()
+        Logger.debug("Updating LedArray with LEDs: #{inspect leds}")
+        Enum.reduce(leds, ledarray, fn(led, last_ledarray) ->
+            case set_led(last_ledarray, led) do
+                {:ok, next_ledarray} -> next_ledarray
+                _ -> last_ledarray
+            end
+        end)
+    end
+
     def display(%Kiwi.LedArray{ref: ref, led_array: led_array}) do
         Logger.debug("Displaying LED array: #{inspect led_array}")
         Circuits.SPI.transfer(ref, :binary.list_to_bin(led_array))
