@@ -79,12 +79,11 @@ defmodule Kiwi.Collection do
             def keys_to_atoms(value), do: value
 
             def get_collection_keys() do
-                %__MODULE__{} |> Map.delete(:__struct__) |> Map.keys
+                [:id | %__MODULE__{} |> Map.delete(:__struct__) |> Map.delete(:id) |> Map.keys |> Enum.sort]
             end
 
-
-            def init_mnesia_table() do
-                case Mnesia.create_table(__MODULE__, [attributes: get_collection_keys(), disc_copies: [node()] ]) do
+            def init_mnesia_table(opts) do
+                case Mnesia.create_table(__MODULE__, opts) do
                     {:atomic, :ok} -> :ok
                     {:aborted, {:already_exists, _}} -> :ok
                     other -> other
@@ -93,15 +92,17 @@ defmodule Kiwi.Collection do
 
             def tuplify(%__MODULE__{} = model) do
                 List.to_tuple([
-                    __MODULE__ |
-                    model |> Map.delete(:__struct__) |> Map.values
+                    __MODULE__ | [
+                        model |> Map.get(:id) |
+                        model |> Map.delete(:__struct__) |> Map.delete(:id) |> Enum.to_list |> Enum.sort(fn({key1, value1}, {key2, value2}) -> key1 < key2 end) |> Enum.into(%{}) |> Map.values
+                    ]
                 ])
             end
 
             def tuplify(%__MODULE__{} = model, true) do
                 List.to_tuple([
-                    __MODULE__ |
-                    (for {k, v} <- Map.delete(model, :__struct__), v != "", do: v)
+                    __MODULE__,
+                    model |> Map.get(:id)
                 ])
             end
 
