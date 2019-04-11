@@ -13,6 +13,10 @@ defmodule Kiwi.LedArray do
         {:ok, %Kiwi.LedArray{ref: ref}}
     end
 
+    def new_from_existing(%Kiwi.LedArray{ref: ref}) do
+       {:ok, %Kiwi.LedArray{ref: ref}}
+    end
+
     def set_led(%Kiwi.LedArray{}, %Kiwi.Collection.Led{id: pos}) when is_integer(pos) and (pos < 1 or pos > 12) do
         {:error, "Out of range"}
     end
