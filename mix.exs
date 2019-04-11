@@ -44,6 +44,7 @@ defmodule Kiwi.MixProject do
             {:jason, "~> 1.1"},
             {:corsica, "~> 1.1"},
             {:mojito, "~> 0.1.1"},
+            {:nerves_time, "~> 0.2.1", targets: @all_targets},
 
             # Dependencies for all targets except :host
             {:nerves_runtime, "~> 0.6", targets: @all_targets},

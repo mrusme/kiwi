@@ -63,6 +63,13 @@ config :mnesia,
     # dump_disc_copies_at_startup: true
     schema_location: :opt_disc
 
+config :nerves_time, :servers, [
+    "0.pool.ntp.org",
+    "1.pool.ntp.org",
+    "2.pool.ntp.org",
+    "3.pool.ntp.org"
+]
+
 # Import target specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
 # Uncomment to use target specific configurations
