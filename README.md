@@ -248,6 +248,33 @@ Here's some useful information if you might want to start contributing to this p
 ╚════╩════╩════╝
 ```
 
+#### LED bitstring
+
+- 4 bytes padding at the beginning
+- 4 btyes per LED: `brightness?, blue, green, red`
+- 4 bytes padding at the end
+
+```elixir
+[
+    0,0,0,0,      
+
+    255,0,0,0, 
+    255,0,0,0, 
+    255,0,0,0, 
+    255,0,0,0, 
+    255,0,0,0, 
+    255,0,0,0, 
+    255,0,0,0, 
+    255,0,0,0, 
+    255,0,0,0, 
+    255,0,0,0, 
+    255,0,0,0, 
+    255,0,0,0,      
+
+    255,255,255,255
+]
+```
+
 ## Kudos to ...
 
 - [@pimoroni](https://github.com/pimoroni) for their awesome hardware
