@@ -151,6 +151,19 @@ defmodule Kiwi.Collection do
             def findOne(id) when is_binary(id) do
                %__MODULE__{id: id} |> findOne
             end
+
+            def all() do
+                all_data = fn -> Mnesia.foldl(fn(a, b) -> [a|b] end, [], __MODULE__) end
+                case Mnesia.transaction(all_data) do
+                    {:atomic, data} ->
+                        case data |> Enum.map(fn tuple -> tuple |> Tuple.delete_at(0) |> structify end) do
+                            [] -> :notfound
+                            nil -> :notfound
+                            all -> {:ok, all}
+                        end
+                    _ -> :notfound
+                end
+            end
         end
     end
 end
