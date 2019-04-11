@@ -11,7 +11,10 @@ defmodule Kiwi.Collection.Led do
 
     def init_table() do
         with \
-            :ok <- init_mnesia_table()
+            :ok <- init_mnesia_table([
+                type: :ordered_set,
+                attributes: Kiwi.Collection.Led.get_collection_keys()
+            ])
         do
             :ok
         else

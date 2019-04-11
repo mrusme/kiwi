@@ -12,7 +12,10 @@ defmodule Kiwi.Collection.Setting do
 
     def init_table() do
         with \
-            :ok <- init_mnesia_table()
+            :ok <- init_mnesia_table([
+                type: :ordered_set,
+                attributes: Kiwi.Collection.Setting.get_collection_keys(), disc_copies: [node()]
+            ])
         do
             :ok
         else
