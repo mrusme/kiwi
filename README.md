@@ -275,6 +275,13 @@ Here's some useful information if you might want to start contributing to this p
 ]
 ```
 
+### Support this project!
+
+#### Looking for a front-end ninja!
+
+Currently looking for someone who would like to build a slim React or Angular webapp on top of the Kiwi API to allow people to easily configure the Keybow without lots of technical mambo-jambo.
+If you'd be interested in contributing hit me up! :-)
+
 ## Kudos to ...
 
 - [@pimoroni](https://github.com/pimoroni) for their awesome hardware
