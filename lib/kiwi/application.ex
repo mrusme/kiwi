@@ -6,7 +6,7 @@ defmodule Kiwi.Application do
     def start(_type, _args) do
         Kiwi.Collection.init_collection()
         Kiwi.Collection.Setting.init_table()
-        # Kiwi.Collection.Led.init_table()
+        Kiwi.Collection.Led.init_table()
 
         opts = [strategy: :one_for_one, name: Kiwi.Supervisor]
         Supervisor.start_link(children(@target), opts)
