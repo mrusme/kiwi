@@ -45,7 +45,7 @@ The Kiwi API is accessible via `http://10.10.10.10:8080/` (where `10.10.10.10` i
 
 The Kiwi API provides a `/settings` endpoint for configuring each individual key.
 
-##### **POST** `/settings/:key`
+##### **POST** `/settings/keys/:key`
 
 `:key` can be one of the following values:
 
@@ -99,7 +99,7 @@ The key names relate to the position of the key on the Keybow when the device is
 In order to configure the first key of the first row to perform a HTTP post to [IFTTT's Maker Webhooks](https://ifttt.com/maker_webhooks) (click *Documentation* on that site) when it's pressed (down), run the following command:
 
 ```sh
-curl -X POST "http://10.10.10.10:8080/settings/key_1_in_row_1" \
+curl -X POST "http://10.10.10.10:8080/settings/keys/key_1_in_row_1" \
     -H "Content-Type: application/json; charset=utf-8" \
     -d $'{
           "object": {
@@ -124,7 +124,7 @@ As soon as the command returns with HTTP status code `200 OK` the key was set up
 Of course you can also do crazy things with the integrated LEDs your Keybow has. In order to configure a fancy key-press light-animation, run the following command:
 
 ```sh
-curl -X POST "http://10.10.10.10:8080/settings/key_1_in_row_1" \
+curl -X POST "http://10.10.10.10:8080/settings/keys/key_1_in_row_1" \
      -H 'Content-Type: application/json; charset=utf-8' \
      -d $'{
           "object": {
@@ -211,7 +211,7 @@ When you now press the key, it should light up in red and quickly fade off. As y
 Actions can be combined by adding all desired action to the JSON, e.g.:
 
 ```sh
-curl -X "POST" "http://10.10.10.10:8080/settings/key_2_in_row_1" \
+curl -X "POST" "http://10.10.10.10:8080/settings/keys/key_2_in_row_1" \
      -H 'Content-Type: application/json; charset=utf-8' \
      -d $'{
           "object": {
@@ -248,7 +248,7 @@ curl "http://YOUR-HUE-BRIDGE-IP-HERE/api/YOUR-GENERATED-USERNAME-HERE/lights" \
 After you've identified the light you'd like to turn on/off, configure two keys:
 
 ```sh
-curl -X "POST" "http://10.10.10.10:8080/settings/key_1_in_row_1" \
+curl -X "POST" "http://10.10.10.10:8080/settings/keys/key_1_in_row_1" \
      -H 'Content-Type: application/json; charset=utf-8' \
      -d $'{
           "object": {
@@ -267,7 +267,7 @@ curl -X "POST" "http://10.10.10.10:8080/settings/key_1_in_row_1" \
 ```
 
 ```sh
-curl -X "POST" "http://10.10.10.10:8080/settings/key_2_in_row_1" \
+curl -X "POST" "http://10.10.10.10:8080/settings/keys/key_2_in_row_1" \
      -H 'Content-Type: application/json; charset=utf-8' \
      -d $'{
           "object": {
