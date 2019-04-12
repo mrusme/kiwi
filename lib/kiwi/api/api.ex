@@ -20,33 +20,42 @@ defmodule Kiwi.Api do
     end
 
     rescue_from Unauthorized, as: e do
+        Logger.error("#{inspect e}")
+
         conn
         |> resp({:unauthorized, %{message: e.message}})
     end
 
     rescue_from [MatchError, RuntimeError], as: e do
-        IO.inspect e
+        Logger.error("#{inspect e}")
 
         conn
         |> resp({:error, e})
     end
 
+    rescue_from Maru.Exceptions.NotFound, as: e do
+        Logger.error("#{inspect e}")
+
+        conn
+        |> resp({:notfound, %{}})
+    end
+
     rescue_from Maru.Exceptions.InvalidFormat, as: e do
-        IO.inspect e
+        Logger.error("#{inspect e}")
 
         conn
         |> resp({:badrequest, %{param: e.param, reason: e.reason}})
     end
 
     rescue_from Maru.Exceptions.Validation, as: e do
-        IO.inspect e
+        Logger.error("#{inspect e}")
 
         conn
         |> resp({:badrequest, %{param: e.param, reason: e.validator}})
     end
 
     rescue_from :all, as: e do
-        IO.inspect e
+        Logger.error("#{inspect e}")
 
         conn
         |> resp({:error, e})
