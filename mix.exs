@@ -43,7 +43,8 @@ defmodule Kiwi.MixProject do
             {:plug_cowboy, "~> 2.0"},
             {:jason, "~> 1.1"},
             {:corsica, "~> 1.1"},
-            {:mojito, "~> 0.1.1"},
+            # {:mojito, "~> 0.1.1"}, # Waiting for @gamache to accept PR and update his library so we can use it here.
+            {:mojito, git: "https://github.com/mrusme/mojito.git"},
             {:nerves_time, "~> 0.2.1", targets: @all_targets},
 
             # Dependencies for all targets except :host
