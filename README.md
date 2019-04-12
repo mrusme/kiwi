@@ -287,7 +287,7 @@ curl -X "POST" "http://10.10.10.10:8080/settings/key_2_in_row_1" \
 
 That's it!
 
-![Party!](https://media2.giphy.com/media/l3q2zVr6cu95nF6O4/giphy.gif?cid=790b76115cb0fae67237764755b20abe)
+![Party party!](docs/philips-hue.gif)
 
 ## Development
 
