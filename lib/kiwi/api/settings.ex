@@ -17,7 +17,7 @@ defmodule Kiwi.Api.Settings do
                     end
                 end
 
-                desc "Update Setting"
+                desc "Update Key Setting"
                 params do
                     optional :value,  type: String
                     optional :object, type: Map do
