@@ -35,15 +35,15 @@ Eject the SDcard, insert it into your Keybow's Raspberry Pi Zero and connect it 
 
 As soon as the device has booted it should be connected to the WiFi. If it isn't you probably screwed up `NERVES_NETWORK_KEY_MGMT`, `NERVES_NETWORK_SSID` and/or `NERVES_NETWORK_PSK` and need to re-run the installation with correct values. Sorry.
 
-Check your WiFi access point's web-interface to find out the IP address that was assigned to your Keybow. As soon as you found the IP you can start configuring the device via it's API.
+Check your WiFi access point's web-interface to find out the IP address that was assigned to your Keybow. As soon as you found the IP you can start configuring the device via its API.
 
-### API
+## API
 
 The Kiwi API is accessible via `http://10.10.10.10:8080/` (where `10.10.10.10` is the IP address of the Keybow in your WiFi).
 
 #### Endpoint: Settings
 
-The Kiwi API provides a `/settings` endpoint for configuring each individual key of the device.
+The Kiwi API provides a `/settings` endpoint for configuring each individual key.
 
 ##### **POST** `/settings/:key`
 
@@ -211,7 +211,7 @@ When you now press the key, it should light up in red and quickly fade off. As y
 Actions can be combined by adding all desired action to the JSON, e.g.:
 
 ```sh
-curl -X "POST" "http://10.0.0.219:8080/settings/key_2_in_row_1" \
+curl -X "POST" "http://10.10.10.10:8080/settings/key_2_in_row_1" \
      -H 'Content-Type: application/json; charset=utf-8' \
      -d $'{
           "object": {
@@ -222,6 +222,72 @@ curl -X "POST" "http://10.0.0.219:8080/settings/key_2_in_row_1" \
           }
         }'
 ```
+
+## Integrations
+
+### Philips Hue Bridge
+
+Find the IP address of your Philips Hue Bridge on your network and create a dedicated user for Kiwi:
+
+```sh
+curl -X "POST" "http://YOUR-HUE-BRIDGE-IP-HERE/api" \
+     -H 'Content-Type: application/json; charset=utf-8' \
+     -d $'{
+          "devicetype": "kiwi#kiwi"
+        }'
+```
+
+This request will return an auto-generated username. With this you can then check all your connected lights:
+
+```sh
+curl "http://YOUR-HUE-BRIDGE-IP-HERE/api/YOUR-GENERATED-USERNAME-HERE/lights" \
+     -H 'Content-Type: application/json; charset=utf-8' \
+     -d $'{}'
+```
+
+After you've identified the light you'd like to turn on/off, configure two keys:
+
+```sh
+curl -X "POST" "http://10.10.10.10:8080/settings/key_1_in_row_1" \
+     -H 'Content-Type: application/json; charset=utf-8' \
+     -d $'{
+          "object": {
+            "keydown": {
+              "http": {
+                "body": "{\\"on\\": true}",
+                "method": "put",
+                "headers": {
+                  "content-type": "application/json"
+                },
+                "url": "http://YOUR-HUE-BRIDGE-IP-HERE/api/YOUR-GENERATED-USERNAME-HERE/lights/1/state"
+              }
+            }
+          }
+        }'
+```
+
+```sh
+curl -X "POST" "http://10.10.10.10:8080/settings/key_2_in_row_1" \
+     -H 'Content-Type: application/json; charset=utf-8' \
+     -d $'{
+          "object": {
+            "keydown": {
+              "http": {
+                "body": "{\\"on\\": false}",
+                "method": "put",
+                "headers": {
+                  "content-type": "application/json"
+                },
+                "url": "http://YOUR-HUE-BRIDGE-IP-HERE/api/YOUR-GENERATED-USERNAME-HERE/lights/1/state"
+              }
+            }
+          }
+        }'
+```
+
+That's it!
+
+![Party!](https://media2.giphy.com/media/l3q2zVr6cu95nF6O4/giphy.gif?cid=790b76115cb0fae67237764755b20abe)
 
 ## Development
 
@@ -247,7 +313,7 @@ Here's some useful information if you might want to start contributing to this p
 #### LED bitstring
 
 - 4 bytes padding at the beginning
-- 4 btyes per LED: `brightness?, blue, green, red`
+- 4 bytes per LED: `brightness?, blue, green, red`
 - 4 bytes padding at the end
 
 ```elixir
@@ -275,7 +341,7 @@ Here's some useful information if you might want to start contributing to this p
 
 #### Looking for a front-end ninja!
 
-Currently looking for someone who would like to build a slim React or Angular webapp on top of the Kiwi API to allow people to easily configure the Keybow without lots of technical mambo-jambo.
+Currently looking for someone who would like to build a slim React or Angular web-app on top of the Kiwi API to allow people to easily configure the Keybow without lots of technical mumbo-jumbo.
 If you'd be interested in contributing hit me up! :-)
 
 ## Kudos to ...
