@@ -3,7 +3,6 @@ defmodule Kiwi.Helpers.Settings do
     use Maru.Helper
 
     params :params_key do
-        requires :brightness, type: Integer
         requires :red, type: Integer
         requires :green, type: Integer
         requires :blue, type: Integer
