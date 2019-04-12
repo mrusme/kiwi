@@ -2,6 +2,7 @@ defmodule Kiwi.Api.Settings do
     require Logger
     use Kiwi.Server
     use Kiwi.Helpers.Response
+    helpers Kiwi.Helpers.Settings
 
     pipeline do
     end
@@ -18,7 +19,15 @@ defmodule Kiwi.Api.Settings do
             desc "Update Setting"
             params do
                 optional :value,  type: String
-                optional :object, type: Map
+                optional :object, type: Map do
+                    optional :keydown, type: Map do
+                        use :params_event_action_object
+                    end
+                    optional :keyup, type: Map do
+                        use :params_event_action_object
+                    end
+                    at_least_one_of [:keydown, :keyup]
+                end
                 exactly_one_of [:value, :object]
             end
             post do

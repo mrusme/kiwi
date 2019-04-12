@@ -223,10 +223,6 @@ curl -X "POST" "http://10.0.0.219:8080/settings/key_2_in_row_1" \
         }'
 ```
 
-#### Caution
-
-There is no validation in place at the moment. If you misspell things inside the JSON or screw up the structure, the configuration might still be saved successfully but the key press won't work.
-
 ## Development
 
 Here's some useful information if you might want to start contributing to this project yourself and want to save yourself from having to browse the official (undocumented!) Keybow's firmware code.
