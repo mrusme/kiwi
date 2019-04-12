@@ -7,6 +7,61 @@ defmodule Kiwi.Helpers.Settings do
         requires :green, type: Integer
         requires :blue, type: Integer
     end
+    params :params_frame do
+        requires :keys, type: Map do
+            optional :key_1_in_row_1, type: Map do
+                use :params_key
+            end
+            optional :key_2_in_row_1, type: Map do
+                use :params_key
+            end
+            optional :key_3_in_row_1, type: Map do
+                use :params_key
+            end
+            optional :key_1_in_row_2, type: Map do
+                use :params_key
+            end
+            optional :key_2_in_row_2, type: Map do
+                use :params_key
+            end
+            optional :key_3_in_row_2, type: Map do
+                use :params_key
+            end
+            optional :key_1_in_row_3, type: Map do
+                use :params_key
+            end
+            optional :key_2_in_row_3, type: Map do
+                use :params_key
+            end
+            optional :key_3_in_row_3, type: Map do
+                use :params_key
+            end
+            optional :key_1_in_row_4, type: Map do
+                use :params_key
+            end
+            optional :key_2_in_row_4, type: Map do
+                use :params_key
+            end
+            optional :key_3_in_row_4, type: Map do
+                use :params_key
+            end
+            at_least_one_of [
+                :key_1_in_row_1,
+                :key_2_in_row_1,
+                :key_3_in_row_1,
+                :key_1_in_row_2,
+                :key_2_in_row_2,
+                :key_3_in_row_2,
+                :key_1_in_row_3,
+                :key_2_in_row_3,
+                :key_3_in_row_3,
+                :key_1_in_row_4,
+                :key_2_in_row_4,
+                :key_3_in_row_4
+            ]
+        end
+        requires :sleep, type: Integer
+    end
     params :params_event_action_object do
         optional :http, type: Map do
             requires :method, type: :atom, values: [:get, :post, :put, :delete]
@@ -16,59 +71,7 @@ defmodule Kiwi.Helpers.Settings do
         end
         optional :led, type: Map do
             requires :frames, type: List do
-                requires :keys, type: Map do
-                    optional :key_1_in_row_1, type: Map do
-                        use :params_key
-                    end
-                    optional :key_2_in_row_1, type: Map do
-                        use :params_key
-                    end
-                    optional :key_3_in_row_1, type: Map do
-                        use :params_key
-                    end
-                    optional :key_1_in_row_2, type: Map do
-                        use :params_key
-                    end
-                    optional :key_2_in_row_2, type: Map do
-                        use :params_key
-                    end
-                    optional :key_3_in_row_2, type: Map do
-                        use :params_key
-                    end
-                    optional :key_1_in_row_3, type: Map do
-                        use :params_key
-                    end
-                    optional :key_2_in_row_3, type: Map do
-                        use :params_key
-                    end
-                    optional :key_3_in_row_3, type: Map do
-                        use :params_key
-                    end
-                    optional :key_1_in_row_4, type: Map do
-                        use :params_key
-                    end
-                    optional :key_2_in_row_4, type: Map do
-                        use :params_key
-                    end
-                    optional :key_3_in_row_4, type: Map do
-                        use :params_key
-                    end
-                    at_least_one_of [
-                        :key_1_in_row_1,
-                        :key_2_in_row_1,
-                        :key_3_in_row_1,
-                        :key_1_in_row_2,
-                        :key_2_in_row_2,
-                        :key_3_in_row_2,
-                        :key_1_in_row_3,
-                        :key_2_in_row_3,
-                        :key_3_in_row_3,
-                        :key_1_in_row_4,
-                        :key_2_in_row_4,
-                        :key_3_in_row_4
-                    ]
-                end
-                requires :sleep, type: Integer
+                use :params_frame
             end
         end
         at_least_one_of [:http, :led]
