@@ -41,11 +41,11 @@ Check your WiFi access point's web-interface to find out the IP address that was
 
 The Kiwi API is accessible via `http://10.10.10.10:8080/` (where `10.10.10.10` is the IP address of the Keybow in your WiFi).
 
-#### Endpoint: Settings
+### Endpoint: Settings
 
 The Kiwi API provides a `/settings` endpoint for configuring each individual key.
 
-##### **POST** `/settings/keys/:key`
+#### **POST** `/settings/keys/:key`
 
 `:key` can be one of the following values:
 
@@ -94,7 +94,7 @@ The key names relate to the position of the key on the Keybow when the device is
                                 pimoroni.com/keybow
 ```
 
-###### HTTP actions
+##### HTTP actions
 
 HTTP actions allow you to run arbitrary HTTP requests (`GET`, `PUT`, `POST`, `DELETE`) in order to control basically everything that provides a more or less sane HTTP API, like IoT devices or web services. Let's have a look at an example:
 
@@ -156,7 +156,7 @@ curl -X POST "http://10.10.10.10:8080/settings/keys/key_1_in_row_1" \
 
 The HTTP requests defined within the `http` array are being run **one after another** (in the order defined within the array, from top to bottom) and not in parallel. This means that the second request waits for the first one to complete until it executes. Also keep in mind that, as of right now, subsequent requests don't care about their prior request's return status and will run no matter what.
 
-###### Scripted HTTP actions (advanced topic)
+##### Scripted HTTP actions (advanced topic)
 
 Now that we've learned how HTTP requests work and that we can have multiple requests running one after another, we can dive deeper into how HTTP requests can be scripted.
 
@@ -201,7 +201,7 @@ The result of all this: If the current state of the lightbulb is `false`, it's b
 
 Scripted HTTP actions allow you to do many fancy things with little knowledge of HTTP requests and Elixir. However keep in mind that the scripts you write are being executed within the same environment in which Kiwi runs and have pretty much the same permissions (access keys, access LEDs, access your WiFi). Hence, always make sure to validate data that you retrieve from endpoints you have no control of!
 
-###### LED actions
+##### LED actions
 
 Of course you can also do crazy things with the integrated LEDs your Keybow has. In order to configure a fancy key-press light-animation, run the following command:
 
@@ -288,7 +288,7 @@ curl -X POST "http://10.10.10.10:8080/settings/keys/key_1_in_row_1" \
 
 When you now press the key, it should light up in red and quickly fade off. As you can see, `frames` is an array of animation frames containing the duration between each frame (`sleep`) and the `keys` that should be targeted. You can even specify multiple keys by adding them to the `keys` object.
 
-###### Combined actions
+##### Combined actions
 
 Actions can be combined by adding all desired action to the JSON, e.g.:
 
@@ -305,7 +305,7 @@ curl -X "POST" "http://10.10.10.10:8080/settings/keys/key_2_in_row_1" \
         }'
 ```
 
-##### **POST** `/settings/animations/:animation`
+#### **POST** `/settings/animations/:animation`
 
 This endpoint allows setting constantly playing LED animations on the keyboard. `:animation` defines the animation you'd like to define. By default, Kiwi loads the animation `animation_main`.
 
@@ -414,6 +414,8 @@ curl -X "POST" "http://10.10.10.10:8080/settings/keys/key_2_in_row_1" \
 That's it!
 
 ![Party party!](docs/philips-hue.gif)
+
+**Want to turn your Philips Hue lights on and off with a single button? Check the advanced [scripted HTTP actions](#scripted-http-actions-advanced-topic) topic!
 
 ## Development
 
