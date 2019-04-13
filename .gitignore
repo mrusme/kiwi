@@ -21,3 +21,5 @@ erl_crash.dump
 .DS_Store
 Mnesia.*
 MnesiaCore.*
+/kiwi.fw
+/kiwi.fw.zip

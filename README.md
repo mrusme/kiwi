@@ -14,7 +14,7 @@ Kiwi – **K**eyboard **I**nterface for **W**ireless **I**nteraction – is a [N
 
 ## Installation
 
-- Download the latest firmware (`kiwi.fw`) from the [releases page](https://github.com/mrusme/kiwi/releases)
+- Download the latest firmware (`kiwi.fw.zip`) from the [releases page](https://github.com/mrusme/kiwi/releases/latest) and unzip it
 - Insert the microSD card into the card reader of your computer
 - Raw-copy the firmware to your microSD card, e.g. using `dd`: `sudo dd bs=1m if=./kiwi.fw of=/dev/SDCARD_DEVICE` (where `SDCARD_DEVICE` is your microSD card, e.g. `/dev/rdisk3`)
 - If your computer did not automatically mount a partition (`BOOT-A`) from the microSD card after the copy has finished, eject the card and plug it back in
