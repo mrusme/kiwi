@@ -1,0 +1,3 @@
+NERVES_NETWORK_KEY_MGMT=WPA-PSK
+NERVES_NETWORK_SSID=Your Wireless Access Point Name Here
+NERVES_NETWORK_PSK=YourWifiPasswordHere
