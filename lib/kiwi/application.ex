@@ -14,6 +14,8 @@ defmodule Kiwi.Application do
 
     def children(:host) do
         [
+            {Task.Supervisor, name: Kiwi.Animator.TaskSupervisor},
+            Kiwi.Animator,
             {Kiwi.Keyboard, %{}},
             Kiwi.Server
         ]
@@ -21,6 +23,8 @@ defmodule Kiwi.Application do
 
     def children(_target) do
         [
+            {Task.Supervisor, name: Kiwi.Animator.TaskSupervisor},
+            Kiwi.Animator,
             {Kiwi.Keyboard, %{}},
             Kiwi.Server
         ]

@@ -47,7 +47,28 @@ defmodule Kiwi.Keyboard do
         ledarray |> Kiwi.LedArray.display()
         Logger.debug "Initialized LEDs!"
 
-        {:ok, %{gpios: gpios, ledarray: ledarray}}
+        new_state = %{gpios: gpios, ledarray: ledarray}
+        Logger.debug "Initializing Animator ..."
+        Kiwi.Animator.set_state(new_state)
+        Kiwi.Animator.start_task()
+        Logger.debug "Initialized Animator!"
+
+        {:ok, new_state}
+    end
+
+    def restart_animator() do
+        GenServer.cast(__MODULE__, :restart_animator)
+    end
+
+    def handle_cast(:restart_animator, %{} = state) do
+        Logger.debug("Restarting animator with state: #{inspect state}")
+
+        Kiwi.Animator.stop_task()
+        :timer.sleep(1000)
+        Kiwi.Animator.set_state(state)
+        Kiwi.Animator.start_task()
+
+        {:noreply, state}
     end
 
     def state_increment_value(value) when is_number(value) do
