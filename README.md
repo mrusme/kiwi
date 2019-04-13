@@ -11,31 +11,22 @@ Kiwi – **K**eyboard **I**nterface for **W**ireless **I**nteraction – is a [N
 - WiFi
 - Pimoroni Keybow
 - An empty microSD card
-- A GitHub account
-- Elixir installed on your computer
 
 ## Installation
 
-```bash
-$ git clone https://github.com/mrusme/kiwi.git
-$ cd kiwi
-$ make dependencies
-```
-
-Insert microSD card into the SDcard reader of your computer and find its block device, e.g. /dev/disk3 (on a Mac), unmount it and use its raw version:
-
-```bash
-$ diskutil umountDisk /dev/disk3
-$ NERVES_NETWORK_KEY_MGMT=WPA-PSK NERVES_NETWORK_SSID=yourWifiNetworkName NERVES_NETWORK_PSK=yourWiFiPassword SD_CARD=/dev/rdisk3 make sdcard
-```
-
-Eject the SDcard, insert it into your Keybow's Raspberry Pi Zero and connect it to a power source.
+- Download the latest firmware (`kiwi.fw`) from the [releases page](https://github.com/mrusme/kiwi/releases)
+- Insert the microSD card into the card reader of your computer
+- Raw-copy the firmware to your microSD card, e.g. using `dd`: `sudo dd bs=1m if=./kiwi.fw of=/dev/SDCARD_DEVICE` (where `SDCARD_DEVICE` is your microSD card, e.g. `/dev/rdisk3`)
+- If your computer did not automatically mount a partition (`BOOT-A`) from the microSD card after the copy has finished, eject the card and plug it back in
+- Open the folder of your mounted partition (`BOOT-A`) and create a file named `wifi.txt` (small caps, no spaces) with [the following content in it](wifi.txt).
+- Adjust the SSID, the PSK and – in most cases this doesn't need to be adjusted – the KEY_MGMT values according to your WiFi configuration
+- Save the file and unmount the partition
+- Insert the microSD card into your Keybow and connect it to a power source
+- Check your WiFi access point's web-interface to find out the IP address that was assigned to your Keybow
 
 ## Configuration
 
-As soon as the device has booted it should be connected to the WiFi. If it isn't you probably screwed up `NERVES_NETWORK_KEY_MGMT`, `NERVES_NETWORK_SSID` and/or `NERVES_NETWORK_PSK` and need to re-run the installation with correct values. Sorry.
-
-Check your WiFi access point's web-interface to find out the IP address that was assigned to your Keybow. As soon as you found the IP you can start configuring the device via its API.
+As soon as you found the IP you can start configuring the device via its API. See next chapters.
 
 ## API
 
@@ -121,7 +112,7 @@ curl -X POST "http://10.10.10.10:8080/settings/keys/key_1_in_row_1" \
         }'
 ```
 
-As soon as the curl command returns with HTTP status code `200 OK` the key was set up and its configuration stored to the Keybow's internal storage (which is the SDcard, of course). You can now press the key (the first one on the top left) to run the HTTP call.
+As soon as the curl command returns with HTTP status code `200 OK` the key was set up and its configuration stored to the Keybow's internal storage (which is the micoSD card, of course). You can now press the key (the first one on the top left) to run the HTTP call.
 
 However, you might have noticed, that the `http` property is not simply an object but rather an array containing objects. This allows you to define multiple HTTP actions to run with the press of a single button. In order to do so, simply add another HTTP request object to the `http` array:
 
@@ -419,9 +410,44 @@ That's it!
 
 ## Development
 
-Here's some useful information if you might want to start contributing to this project yourself and want to save yourself from having to browse the official (undocumented!) Keybow's firmware code.
+### Requirements
+
+- WiFi
+- Pimoroni Keybow
+- An empty microSD card
+- A GitHub account
+- Elixir installed on your computer
+
+### Installation
+
+Make sure to have Erlang and Elixir installed on your computer!
+
+```bash
+$ git clone https://github.com/mrusme/kiwi.git
+$ cd kiwi
+$ make dependencies
+```
+
+*Note: For development it makes sense that you enable the WiFi configuration block within `config/config.exs`, so that you can pass the WiFi config via environment variables during the build.*
+
+Insert microSD card into the microSD card reader of your computer and find its block device, e.g. /dev/disk3 (on a Mac), unmount it and use its raw version:
+
+```bash
+$ diskutil umountDisk /dev/disk3
+$ NERVES_NETWORK_KEY_MGMT=WPA-PSK NERVES_NETWORK_SSID=yourWifiNetworkName NERVES_NETWORK_PSK=yourWiFiPassword SD_CARD=/dev/rdisk3 make sdcard
+```
+
+Eject the microSD card, insert it into your Keybow's Raspberry Pi Zero and connect it to a power source.
+
+## Configuration
+
+As soon as the device has booted it should be connected to the WiFi. If it isn't you probably screwed up `NERVES_NETWORK_KEY_MGMT`, `NERVES_NETWORK_SSID` and/or `NERVES_NETWORK_PSK` and need to re-run the installation with correct values. Sorry.
+
+Check your WiFi access point's web-interface to find out the IP address that was assigned to your Keybow. As soon as you found the IP you can start configuring the device via its API.
 
 ### Hardware information
+
+Here's some useful information if you might want to start contributing to this project yourself and want to save yourself from having to browse the official (undocumented!) Keybow's firmware code.
 
 #### Keybow keyboard GPIO pin IDs
 
