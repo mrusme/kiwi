@@ -96,6 +96,8 @@ The key names relate to the position of the key on the Keybow when the device is
 
 ###### HTTP actions
 
+HTTP actions allow you to run arbitrary HTTP requests (`GET`, `PUT`, `POST`, `DELETE`) in order to control basically everything that provides a more or less sane HTTP API, like IoT devices or web services. Let's have a look at an example:
+
 In order to configure the first key of the first row to perform a HTTP post to [IFTTT's Maker Webhooks](https://ifttt.com/maker_webhooks) (click *Documentation* on that site) when it's pressed (down), run the following command:
 
 ```sh
@@ -104,20 +106,100 @@ curl -X POST "http://10.10.10.10:8080/settings/keys/key_1_in_row_1" \
     -d $'{
           "object": {
             "keydown": {
-              "http": {
-                "body": "{}",
-                "method": "post",
-                "headers": {
-                  "content-type": "application/json"
-                },
-                "url": "https://maker.ifttt.com/trigger/key_1_in_row_1/with/key/your-ifttt-key-here"
-              }
+              "http": [
+                {
+                  "body": "{}",
+                  "method": "post",
+                  "headers": {
+                    "content-type": "application/json"
+                  },
+                  "url": "https://maker.ifttt.com/trigger/key_1_in_row_1/with/key/your-ifttt-key-here"
+                }
+              ]
             }
           }
         }'
 ```
 
-As soon as the command returns with HTTP status code `200 OK` the key was set up and its configuration stored to the Keybow's internal storage (which is the SDcard, of course). You can now press the key (the first one on the top left) to run the HTTP call.
+As soon as the curl command returns with HTTP status code `200 OK` the key was set up and its configuration stored to the Keybow's internal storage (which is the SDcard, of course). You can now press the key (the first one on the top left) to run the HTTP call.
+
+However, you might have noticed, that the `http` property is not simply an object but rather an array containing objects. This allows you to define multiple HTTP actions to run with the press of a single button. In order to do so, simply add another HTTP request object to the `http` array:
+
+```sh
+curl -X POST "http://10.10.10.10:8080/settings/keys/key_1_in_row_1" \
+    -H "Content-Type: application/json; charset=utf-8" \
+    -d $'{
+          "object": {
+            "keydown": {
+              "http": [
+                {
+                  "body": "{}",
+                  "method": "post",
+                  "headers": {
+                    "content-type": "application/json"
+                  },
+                  "url": "https://maker.ifttt.com/trigger/turn_lights_off/with/key/your-ifttt-key-here"
+                },
+                {
+                  "body": "{}",
+                  "method": "post",
+                  "headers": {
+                    "content-type": "application/json"
+                  },
+                  "url": "https://maker.ifttt.com/trigger/power_on_television/with/key/your-ifttt-key-here"
+                }
+              ]
+            }
+          }
+        }'
+```
+
+The HTTP requests defined within the `http` array are being run **one after another** (in the order defined within the array, from top to bottom) and not in parallel. This means that the second request waits for the first one to complete until it executes. Also keep in mind that, as of right now, subsequent requests don't care about their prior request's return status and will run no matter what.
+
+###### Scripted HTTP actions (advanced topic)
+
+Now that we've learned how HTTP requests work and that we can have multiple requests running one after another, we can dive deeper into how HTTP requests can be scripted.
+
+Let's assume, you would like one button to trigger an API that turns a lightbulb on or off. The API accepts a boolean value as the lightbulb's state, with `true` being on, `false` being off. Now, in order to program a single button to trigger the lightbulb on **and** off with each keypress, you need to have a dynamic value within your request's body, that changes, depending on the current state of the lightbulb. This state could be retrieved inside a separate HTTP `GET` request that runs prior to the one updating the lightbulb's status.
+
+Kiwi allows you to do just this. Let's have a look on how such a `http` definition could look like for a Philips Hue connected lightbulb:
+
+```sh
+curl -X "POST" "http://10.10.10.10:8080/settings/keys/key_1_in_row_1" \
+     -H 'Content-Type: application/json; charset=utf-8' \
+     -d $'{
+          "object": {
+            "keydown": {
+              "http": [
+                {
+                  "body": "{}",
+                  "method": "get",
+                  "headers": {
+                    "content-type": "application/json"
+                  },
+                  "url": "http://YOUR-HUE-BRIDGE-IP-HERE/api/YOUR-GENERATED-USERNAME-HERE/lights/1"
+                },
+                {
+                  "body": "{\\"on\\": <<{Map.get(previous_http_response, :body) |> Jason.decode!() |> Map.get(\\"state\\") |> Map.get(\\"on\\") |> Kernel.not}>>}",
+                  "method": "put",
+                  "headers": {
+                    "content-type": "application/json"
+                  },
+                  "url": "http://YOUR-HUE-BRIDGE-IP-HERE/api/YOUR-GENERATED-USERNAME-HERE/lights/1/state"
+                }
+              ]
+            }
+          }
+        }'
+```
+
+As you can see, we're doing two requests here. First, we run a `GET` request that retrieves the current status of the Hue lightbulb. In the second request then, we use the the scripted HTTP action feature within the request the body. In order to make the script identifiable to Kiwi, it needs to be surrounded by `<<{}>>`. As script language we use Elixir.
+
+Every request that uses scripting retrieves a variable named `previous_http_response` which either contains the HTTP response of the previously executed HTTP request or `nil`. `previous_http_response` is of type [`%Mojito.Response{}`](https://github.com/appcues/mojito). In this example, we extract the `body` from the `%Mojito.Response{}` (which is a JSON string) and decode it using `Jason.decode!`. Afterwards we `Map.get` the `state` map from the decoded body map and then `Map.get` its `on` property – which is a boolean value. If `on` is `true`, it means that our light is currently turned on. If it's `false`, it means that it's currently off. Last but not least, we pipe the boolean value to `Kernel.not`, which inverts the boolean state. The the inverted state is the return of this script, will be converted to a JSON representation and used as a value in the very place our `<<{ ... }>>` is.
+
+The result of all this: If the current state of the lightbulb is `false`, it's being inverted to `true` and set as value for the `on` property inside our request's body. The request will then execute with a JSON body that says `{"on": true}`, so that the Hue turns the lightbulb on. When we press the key another time, the `GET` request will retrieve `true` inside of `response.body.state.on` and the upcoming `PUT` request will fetch this value, invert it and send `{"on": false}`, so that the light turns back off.
+
+Scripted HTTP actions allow you to do many fancy things with little knowledge of HTTP requests and Elixir. However keep in mind that the scripts you write are being executed within the same environment in which Kiwi runs and have pretty much the same permissions (access keys, access LEDs, access your WiFi). Hence, always make sure to validate data that you retrieve from endpoints you have no control of!
 
 ###### LED actions
 
@@ -217,7 +299,7 @@ curl -X "POST" "http://10.10.10.10:8080/settings/keys/key_2_in_row_1" \
           "object": {
             "keydown": {
               "led": { ... },
-              "http": { ... }
+              "http": [{ ... }]
             }
           }
         }'
@@ -297,14 +379,14 @@ curl -X "POST" "http://10.10.10.10:8080/settings/keys/key_1_in_row_1" \
      -d $'{
           "object": {
             "keydown": {
-              "http": {
+              "http": [{
                 "body": "{\\"on\\": true}",
                 "method": "put",
                 "headers": {
                   "content-type": "application/json"
                 },
                 "url": "http://YOUR-HUE-BRIDGE-IP-HERE/api/YOUR-GENERATED-USERNAME-HERE/lights/1/state"
-              }
+              }]
             }
           }
         }'

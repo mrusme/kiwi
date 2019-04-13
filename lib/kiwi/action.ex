@@ -25,7 +25,7 @@ defmodule Kiwi.Action do
     def run_action_object_for_event(%{} = event_action_object, event, state) do
         Logger.debug("Running action object for event: #{inspect event_action_object} ...")
 
-        pid_http = spawn fn ->
+        _pid_http = spawn fn ->
             event_action_object
             |> Map.get("http")
             |> run_action_http(event, state)
@@ -42,6 +42,13 @@ defmodule Kiwi.Action do
         state
     end
 
+    def run_action_http(http_list, event, state) when is_list(http_list) do
+        Enum.reduce(http_list, state, fn(http_entry, last_state) ->
+            Logger.debug("Calling run_action_http with #{inspect http_entry}")
+            run_action_http(http_entry, event, last_state)
+        end)
+    end
+
     def run_action_http(%{"method" => method_string, "url" => url, "headers" => headers_object, "body" => body}, _event, state) do
         Logger.debug("Found http action within event action object, running ...")
         headers = for  {k, v}  <-  headers_object  do {k, v} end
@@ -49,13 +56,16 @@ defmodule Kiwi.Action do
         method = String.to_existing_atom(method_string)
         Logger.debug("HTTP request with method: #{inspect method}")
 
-        case Mojito.request(method, url, headers, body, []) do
+        binding_from_state = state |> Kiwi.Actinidain.get_binding_from_state()
+        body_synthesized = Kiwi.Actinidain.sythesize(body, binding_from_state)
+
+        case Mojito.request(method, url, headers, body_synthesized, []) do
             {:ok, response} ->
                 Logger.debug("HTTP request was successful: #{inspect response}")
-                state
+                state |> Map.put(:previous_http_response, response)
             err ->
                 Logger.error("HTTP request failed: #{inspect err}")
-                state
+                state |> Map.put(:previous_http_response, nil)
         end
     end
 

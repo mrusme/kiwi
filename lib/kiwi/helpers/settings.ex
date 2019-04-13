@@ -63,7 +63,7 @@ defmodule Kiwi.Helpers.Settings do
         requires :sleep, type: Integer
     end
     params :params_event_action_object do
-        optional :http, type: Map do
+        optional :http, type: List do
             requires :method, type: :atom, values: [:get, :post, :put, :delete]
             requires :url, type: String
             optional :headers, type: Map
