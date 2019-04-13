@@ -263,7 +263,9 @@ curl -X "POST" "http://10.0.0.219:8080/settings/animations/animation_main" \
      -d "{\"object\": {\"frames\": $(python3 ./image2kiwi.py ./rainbow.gif) }}"
 ```
 
-![Notice: image2kiwi scales the image to max 3x4px. If you pass an image that's 300x300px, its aspect will be kept and it will be scaled to 3x3px. Hence, the bottom three keys won't light up.](docs/image2kiwi-animation.gif)
+![Animation](docs/image2kiwi-animation.gif)
+
+*Notice: image2kiwi scales the image to max 3x4px. If you pass an image that's 300x300px, its aspect will be kept and it will be scaled to 3x3px. Hence, the bottom three keys won't light up.*
 
 ## Integrations
 
