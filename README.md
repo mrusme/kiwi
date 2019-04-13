@@ -223,6 +223,48 @@ curl -X "POST" "http://10.10.10.10:8080/settings/keys/key_2_in_row_1" \
         }'
 ```
 
+##### **POST** `/settings/animations/:animation`
+
+This endpoint allows setting constantly playing LED animations on the keyboard. `:animation` defines the animation you'd like to define. By default, Kiwi loads the animation `animation_main`.
+
+You can configure `animation_main` like this:
+
+```sh
+curl -X "POST" "http://10.10.10.10:8080/settings/animations/animation_main" \
+     -H 'Content-Type: application/json; charset=utf-8' \
+     -d $'{
+          "object": {
+            "frames": [
+              {
+                "sleep": 500,
+                "keys": {
+                  "key_1_in_row_1": {
+                    "red": 255,
+                    "green": 0,
+                    "blue": 0
+                  }
+                }
+              },
+              ...
+              ...
+              ...
+              ...
+              ...
+            ]
+          }
+        }'
+```
+
+Alternatively you can use [image2kiwi](https://github.com/mrusme/image2kiwi) to generate an animation from a JPG, PNG, GIF, etc. Please refer to its documentation on how image generation works. Here's the curl example of how to set a generated animation:
+
+```sh
+curl -X "POST" "http://10.0.0.219:8080/settings/animations/animation_main" \
+     -H 'Content-Type: application/json; charset=utf-8' \
+     -d "{\"object\": {\"frames\": $(python3 ./image2kiwi.py ./rainbow.gif) }}"
+```
+
+![Notice: image2kiwi scales the image to max 3x4px. If you pass an image that's 300x300px, its aspect will be kept and it will be scaled to 3x3px. Hence, the bottom three keys won't light up.](docs/image2kiwi-animation.gif)
+
 ## Integrations
 
 ### Philips Hue Bridge
