@@ -93,6 +93,8 @@ defmodule Kiwi.Action do
             end)
         )
 
+        updated_state |> Map.get(:ledarray) |> Kiwi.LedArray.display()
+
         case frame |> Map.get("sleep") do
             nil ->
                 updated_state
@@ -117,7 +119,6 @@ defmodule Kiwi.Action do
                 Logger.debug("Key LED: #{inspect key_led}")
                 {:ok, updated_ledarray} = ledarray |> Kiwi.LedArray.set_led(key_led)
                 Logger.debug("Updated LED array: #{inspect updated_ledarray}")
-                updated_ledarray |> Kiwi.LedArray.display()
                 {ledarray, updated_ledarray}
             end)
         Logger.debug("New state: #{inspect new_state}")
