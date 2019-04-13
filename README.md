@@ -415,7 +415,7 @@ That's it!
 
 ![Party party!](docs/philips-hue.gif)
 
-**Want to turn your Philips Hue lights on and off with a single button? Check the advanced [scripted HTTP actions](#scripted-http-actions-advanced-topic) topic!
+**Want to turn your Philips Hue lights on and off with a single button? Check the advanced [scripted HTTP actions](#scripted-http-actions-advanced-topic) topic!**
 
 ## Development
 
