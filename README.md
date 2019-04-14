@@ -31,6 +31,13 @@ As soon as you found the IP you can start configuring the device via its API. Se
 
 The Kiwi API is accessible via `http://10.10.10.10:8080/` (where `10.10.10.10` is the IP address of the Keybow in your WiFi).
 
+Side note: All example API calls in this documentation are being performed using [`curl`](https://curl.haxx.se), as it's available for the majority of platforms. However, if you prefer an easier tool for your specific platform, you can check the following:
+
+- [Paw](https://paw.cloud) (MacOS)
+- [Postman](https://www.getpostman.com/downloads/) (MacOS, Linux, Windows)
+- [Insomnia](https://insomnia.rest/download/) (MacOS, Linux, Windows)
+- [Swagger Inspector](https://inspector.swagger.io/) (web browser)
+
 ### Endpoint: Settings
 
 The Kiwi API provides a `/settings` endpoint for configuring each individual key.
