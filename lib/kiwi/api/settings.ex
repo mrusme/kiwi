@@ -8,6 +8,15 @@ defmodule Kiwi.Api.Settings do
     end
 
     namespace :settings do
+        get do
+            case Kiwi.Collection.Setting.all() do
+                {:ok, all_settings} ->
+                    converted_settings = all_settings |> Enum.map(fn one_setting -> one_setting |> Kiwi.Helpers.Settings.get_params_from_id_value() end)
+                    conn |> resp({:ok, converted_settings})
+                other -> conn |> resp({:error, other})
+            end
+        end
+
         namespace :keys do
             route_param :id, type: String do
                 get do
