@@ -17,6 +17,26 @@ defmodule Kiwi.Api.Settings do
             end
         end
 
+        desc "Bulk Upsert Setting"
+        params do
+            requires :settings, type: List do
+                requires :id,     type: String
+                optional :value,  type: String
+                optional :object, type: Map
+                exactly_one_of [:value, :object]
+            end
+        end
+        post do
+            case params[:settings]
+            |> Enum.map(fn param -> struct(Kiwi.Collection.Setting, Kiwi.Helpers.Settings.get_id_value_from_params(param)) end)
+            |> Kiwi.Collection.Setting.upsertMany() do
+                :ok -> conn |> resp({:ok, nil})
+                other ->
+                    Logger.error("#{inspect other}")
+                    conn |> resp({:error, nil})
+            end
+        end
+
         namespace :keys do
             get do
                 all_keys = Kiwi.Keyboard.keys()
