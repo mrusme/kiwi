@@ -141,6 +141,10 @@ defmodule Kiwi.Collection do
                 %__MODULE__{id: id} |> find
             end
 
+            def find(id) when is_atom(id) do
+               Atom.to_string(id) |> find
+            end
+
             def findOne(%__MODULE__{:id => id} = model) when is_map(model) do
                 case model |> find do
                     {:ok, found_models} -> {:ok, found_models |> Enum.at(0)}
@@ -150,6 +154,10 @@ defmodule Kiwi.Collection do
 
             def findOne(id) when is_binary(id) do
                %__MODULE__{id: id} |> findOne
+            end
+
+            def findOne(id) when is_atom(id) do
+               Atom.to_string(id) |> findOne
             end
 
             def all() do
