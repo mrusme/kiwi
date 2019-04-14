@@ -42,6 +42,71 @@ Side note: All example API calls in this documentation are being performed using
 
 The Kiwi API provides a `/settings` endpoint for configuring each individual key.
 
+#### **GET** `/settings`
+
+Retrieve a list of all currently configured settings (e.g. for backing up your current configuration).
+
+```sh
+curl "http://10.10.10.10:8080/settings" \
+     -H 'Content-Type: application/json; charset=utf-8' \
+     -d $'{}'
+```
+
+#### **POST** `/settings`
+
+Bulk upsert endpoint, allows upserting a list of settings (e.g. for recovery of a backup). Note that this endpoint does no settings syntax check, meaning that individual settings for LED animations or key configs get saved without validation. Hence this endpoint should only be used for importing configuration that was already validated once (e.g. importing a backup).
+
+```sh
+curl -X "POST" "http://10.10.10.10:8080/settings" \
+     -H 'Content-Type: application/json; charset=utf-8' \
+     -d $'{
+          "settings": [
+            {
+              "id": "key_1_in_row_1",
+              "object": {
+                "keydown": {
+                  "http": [
+
+                    ...
+
+                  ]
+                }
+              }
+            },
+            {
+              "id": "animation_main",
+              "object": {
+                "frames": [
+
+                    ...
+
+                ]
+              }
+            }
+          ]
+        }'
+```
+
+#### **GET** `/settings/keys`
+
+Retrieve a list of all currently configured keys.
+
+```sh
+curl "http://10.10.10.10:8080/settings/keys" \
+     -H 'Content-Type: application/json; charset=utf-8' \
+     -d $'{}'
+```
+
+#### **GET** `/settings/keys/:key`
+
+Retrieve the current configuration for a specific key.
+
+```sh
+curl "http://10.10.10.10:8080/settings/keys/key_1_in_row_1" \
+     -H 'Content-Type: application/json; charset=utf-8' \
+     -d $'{}'
+```
+
 #### **POST** `/settings/keys/:key`
 
 `:key` can be one of the following values:
@@ -300,6 +365,16 @@ curl -X "POST" "http://10.10.10.10:8080/settings/keys/key_2_in_row_1" \
             }
           }
         }'
+```
+
+#### **GET** `/settings/animations/:animation`
+
+Retrieve the current configuration for a specific animation.
+
+```sh
+curl "http://10.10.10.10:8080/settings/animations/animation_main" \
+     -H 'Content-Type: application/json; charset=utf-8' \
+     -d $'{}'
 ```
 
 #### **POST** `/settings/animations/:animation`
