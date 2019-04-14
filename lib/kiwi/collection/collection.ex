@@ -124,6 +124,14 @@ defmodule Kiwi.Collection do
                 end
             end
 
+            def upsertMany(models_list) when is_list(models_list) do
+                upsert_data = fn -> models_list |> Enum.each(fn model -> model |> tuplify |> Mnesia.write end) end
+                case Mnesia.transaction(upsert_data) do
+                    {:atomic, :ok} -> :ok
+                    other -> other
+                end
+            end
+
             def find(%__MODULE__{:id => id} = model) when is_map(model) do
                 find_data = fn -> model |> tuplify(true) |> Mnesia.read end
                 case Mnesia.transaction(find_data) do
