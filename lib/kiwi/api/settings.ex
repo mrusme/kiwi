@@ -39,9 +39,8 @@ defmodule Kiwi.Api.Settings do
                     end
                 end
 
-                desc "Update Key Setting"
+                desc "Upsert Key Setting"
                 params do
-                    optional :value,  type: String
                     optional :object, type: Map do
                         optional :keydown, type: Map do
                             use :params_event_action_object
@@ -51,7 +50,6 @@ defmodule Kiwi.Api.Settings do
                         end
                         at_least_one_of [:keydown, :keyup]
                     end
-                    exactly_one_of [:value, :object]
                 end
                 post do
                     case struct(Kiwi.Collection.Setting, Kiwi.Helpers.Settings.get_id_value_from_params(params)) |> Kiwi.Collection.Setting.upsert do
@@ -72,7 +70,7 @@ defmodule Kiwi.Api.Settings do
                     end
                 end
 
-                desc "Update Animation Setting"
+                desc "Upsert Animation Setting"
                 params do
                     requires :object, type: Map do
                         requires :frames, type: List do
