@@ -18,6 +18,19 @@ defmodule Kiwi.Api.Settings do
         end
 
         namespace :keys do
+            get do
+                all_keys = Kiwi.Keyboard.keys()
+                |> Map.keys()
+                |> Enum.map(fn key_name ->
+                                case Kiwi.Collection.Setting.findOne(key_name) do
+                                    {:ok, found_model} -> Kiwi.Helpers.Settings.get_params_from_id_value(found_model)
+                                    other -> nil
+                                end
+                            end)
+                |> Enum.filter(fn(found_key) -> !is_nil(found_key) end)
+                conn |> resp({:ok, all_keys})
+            end
+
             route_param :id, type: String do
                 get do
                     case Kiwi.Collection.Setting.findOne(params[:id]) do
