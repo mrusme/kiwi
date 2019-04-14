@@ -3,7 +3,7 @@ Kiwi
 
 Kiwi – **K**eyboard **I**nterface for **W**ireless **I**nteraction – is a [Nerves](https://github.com/nerves-project)-based firmware for [Pimoroni](https://github.com/pimoroni)'s [Keybow](https://learn.pimoroni.com/keybow) that enables the device to connect via WiFi and control other devices and services through customizable API calls.
 
-![Pimoroni Keybow](docs/keybow.jpg)
+![Pimoroni Keybow](docs/kiwi.gif)
 *Photo by Pimoroni*
 
 ## Requirements
