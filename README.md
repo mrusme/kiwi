@@ -279,7 +279,7 @@ curl -X POST "http://10.10.10.10:8080/settings/keys/key_1_in_row_1" \
                     "sleep": 50,
                     "keys": {
                       "key_1_in_row_1": {
-                        "brightness": 255,
+                        "brightness": 227,
                         "red": 55,
                         "blue": 0,
                         "green": 0
@@ -290,7 +290,7 @@ curl -X POST "http://10.10.10.10:8080/settings/keys/key_1_in_row_1" \
                     "sleep": 50,
                     "keys": {
                       "key_1_in_row_1": {
-                        "brightness": 255,
+                        "brightness": 227,
                         "red": 155,
                         "blue": 0,
                         "green": 0
@@ -301,7 +301,7 @@ curl -X POST "http://10.10.10.10:8080/settings/keys/key_1_in_row_1" \
                     "sleep": 50,
                     "keys": {
                       "key_1_in_row_1": {
-                        "brightness": 255,
+                        "brightness": 227,
                         "red": 255,
                         "blue": 0,
                         "green": 0
@@ -312,7 +312,7 @@ curl -X POST "http://10.10.10.10:8080/settings/keys/key_1_in_row_1" \
                     "sleep": 50,
                     "keys": {
                       "key_1_in_row_1": {
-                        "brightness": 255,
+                        "brightness": 227,
                         "red": 155,
                         "blue": 0,
                         "green": 0
@@ -323,7 +323,7 @@ curl -X POST "http://10.10.10.10:8080/settings/keys/key_1_in_row_1" \
                     "sleep": 50,
                     "keys": {
                       "key_1_in_row_1": {
-                        "brightness": 255,
+                        "brightness": 227,
                         "red": 55,
                         "blue": 0,
                         "green": 0
@@ -334,7 +334,7 @@ curl -X POST "http://10.10.10.10:8080/settings/keys/key_1_in_row_1" \
                     "sleep": 0,
                     "keys": {
                       "key_1_in_row_1": {
-                        "brightness": 255,
+                        "brightness": 227,
                         "red": 0,
                         "blue": 0,
                         "green": 0
@@ -520,7 +520,7 @@ $ NERVES_NETWORK_KEY_MGMT=WPA-PSK NERVES_NETWORK_SSID=yourWifiNetworkName NERVES
 
 Eject the microSD card, insert it into your Keybow's Raspberry Pi Zero and connect it to a power source.
 
-## Configuration
+### Configuration
 
 As soon as the device has booted it should be connected to the WiFi. If it isn't you probably screwed up `NERVES_NETWORK_KEY_MGMT`, `NERVES_NETWORK_SSID` and/or `NERVES_NETWORK_PSK` and need to re-run the installation with correct values. Sorry.
 
@@ -545,36 +545,72 @@ Here's some useful information if you might want to start contributing to this p
 ╚════╩════╩════╝
 ```
 
-#### LED bitstring
+#### APA102 LEDs
+
+![LED frame](docs/led-frame.png)
 
 - 4 bytes padding at the beginning
-- 4 bytes per LED: `brightness?, blue, green, red`
+- 4 bytes per LED: `brightness, blue, green, red`
 - 4 bytes padding at the end
 
 ```elixir
 [
     0,0,0,0,      
 
-    255,0,0,0, 
-    255,0,0,0, 
-    255,0,0,0, 
-    255,0,0,0, 
-    255,0,0,0, 
-    255,0,0,0, 
-    255,0,0,0, 
-    255,0,0,0, 
-    255,0,0,0, 
-    255,0,0,0, 
-    255,0,0,0, 
-    255,0,0,0,      
+    227,0,0,0, 
+    227,0,0,0, 
+    227,0,0,0, 
+    227,0,0,0, 
+    227,0,0,0, 
+    227,0,0,0, 
+    227,0,0,0, 
+    227,0,0,0, 
+    227,0,0,0, 
+    227,0,0,0, 
+    227,0,0,0, 
+    227,0,0,0,      
 
     255,255,255,255
 ]
 ```
 
-### Support this project!
+[@Gadgetoid](https://github.com/Gadgetoid) provided very good [insight on this topic here](https://github.com/pimoroni/keybow-firmware/issues/23#issuecomment-486163227). Quote:
 
-#### Looking for a front-end ninja!
+> This magic number is the LED frame marker, which is indicated by 3 high bits set to 1: 0b11100000 plus 5 bits of global (applies to R, G and B LEds in a package) brightness: 0b00011111 (giving an 0-31 brightness range). Since we don't want to drive at maximum brightness, but still want colours to have the full 255255255 range, we use global brightness to handle the dimming across the LEDs.
+
+Quote from the [linked wordpress.com site](https://cpldcpu.wordpress.com/2014/08/27/apa102/):
+
+> ...
+> 
+> Each update consists of a start frame of 32 zeroes, 32 bits for every LED and an end frame of 32 ones.  I am not sure what the “End Frame” is good for, since its encoding is indistinguishable from a LED set to maximum brightness and will simply be forwarded to the next LED. In my experiments, omitting the end frame did not have any impact.
+> 
+> One interesting addition is the “global” field for each LED, which allows to control the brightness of the LED in 32 steps from 0 to 31. When trying different parameters, I was quite surprised to observe that the LEDs did not show any visible pulse-width-modulation (PWM) flicker at all when the global brightness was set to 31. This is quite different from the WS2812, which shows visible PWM flicker when moving the LEDs.
+> 
+> Interestingly, the APA102 started to flicker once I set the global brightness to 30 or below.
+> 
+> ...
+
+Thanks to Tim who apparently run's that blog!
+
+## Troubleshooting
+
+### Have you tried turning it off and on again?
+
+In most cases, simply unplugging and plugging the Keybow back in will fix every issue that might occur during runtime.
+
+### Investigating
+
+You can connect to your Kiwi instance through SSH:
+
+```sh
+ssh root@10.10.10.10
+```
+
+There you'll end up inside a IEx in which you can start investigating your issue. Keep in mind that there will be no Logger output unless you execute `RingLogger.next` or attach to the RingLogger using `RingLogger.attach`.
+
+## Support this project!
+
+### Looking for a front-end ninja!
 
 Currently looking for someone who would like to build a slim React or Angular web-app on top of the Kiwi API to allow people to easily configure the Keybow without lots of technical mumbo-jumbo.
 If you'd be interested in contributing hit me up! :-)
@@ -582,6 +618,8 @@ If you'd be interested in contributing hit me up! :-)
 ## Kudos to ...
 
 - [@pimoroni](https://github.com/pimoroni) for their awesome hardware
+- [@nerves-project](https://github.com/nerves-project) for their awesome framework
+- [@cafekraft](https://www.instagram.com/cafekraft/) for their awesome coffee, that kept me awake every night to build this
 
 ## "Let me tell you..."
 
