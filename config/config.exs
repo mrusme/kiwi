@@ -39,14 +39,13 @@ config :nerves_init_gadget,
     node_name: node_name,
     node_host: :mdns_domain
 
-# Include this if you want your WiFi config to be included during build - otherwise use the wifi.txt setup.
-# key_mgmt = System.get_env("NERVES_NETWORK_KEY_MGMT") || "WPA-PSK"
-# config :nerves_network, :default,
-#     wlan0: [
-#         ssid: System.get_env("NERVES_NETWORK_SSID"),
-#         psk: System.get_env("NERVES_NETWORK_PSK"),
-#         key_mgmt: String.to_atom(key_mgmt)
-#     ]
+key_mgmt = System.get_env("NERVES_NETWORK_KEY_MGMT") || "WPA-PSK"
+config :nerves_network, :default,
+    wlan0: [
+        ssid: System.get_env("NERVES_NETWORK_SSID"),
+        psk: System.get_env("NERVES_NETWORK_PSK"),
+        key_mgmt: String.to_atom(key_mgmt)
+    ]
 
 config :kiwi, Kiwi.Server,
     adapter: Plug.Cowboy,
