@@ -125,7 +125,7 @@ defmodule Kiwi.Action do
         {_, new_state} = state |> Map.get_and_update(:ledarray,
             fn ledarray ->
                 Logger.debug("Updating LED array: #{inspect ledarray} ...")
-                {:ok, key_led} = Kiwi.Collection.Led.new(key_name_str, 255, Map.get(key, "red"), Map.get(key, "green"), Map.get(key, "blue"))
+                {:ok, key_led} = Kiwi.Collection.Led.new(key_name_str, Kiwi.Collection.Led.brightness(key), Kiwi.Collection.Led.red(key), Kiwi.Collection.Led.green(key), Kiwi.Collection.Led.blue(key))
                 Logger.debug("Key LED: #{inspect key_led}")
                 {:ok, updated_ledarray} = ledarray |> Kiwi.LedArray.set_led(key_led)
                 Logger.debug("Updated LED array: #{inspect updated_ledarray}")

@@ -3,9 +3,10 @@ defmodule Kiwi.Helpers.Settings do
     use Maru.Helper
 
     params :params_key do
-        requires :red, type: Integer
-        requires :green, type: Integer
-        requires :blue, type: Integer
+        optional :brightness, type: Integer
+        requires :red,        type: Integer
+        requires :green,      type: Integer
+        requires :blue,       type: Integer
     end
     params :params_frame do
         requires :keys, type: Map do
