@@ -590,7 +590,7 @@ Quote from the [linked wordpress.com site](https://cpldcpu.wordpress.com/2014/08
 > 
 > ...
 
-Thanks to Tim who apparently run's that blog!
+Thanks to Tim who apparently runs that blog!
 
 ## Troubleshooting
 
