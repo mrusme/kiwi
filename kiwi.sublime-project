@@ -11,6 +11,12 @@
                 "Mnesia.*",
                 "mnesia_disc_dump"
             ],
+            "file_exclude_patterns":
+            [
+                "*.fw",
+                "*.fw.zip",
+                "*.paw"
+            ],
 			"path": "."
 		}
 	]
