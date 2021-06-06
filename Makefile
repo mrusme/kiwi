@@ -16,6 +16,9 @@ firmware:
 
 sdcard:
 	export MIX_TARGET=rpi0 \
+	&& mix deps.clean --all \
+	&& mix deps.get \
+	&& mix deps.compile --all \
 	&& mix firmware.burn -d ${SD_CARD}
 
 release:

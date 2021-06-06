@@ -5,7 +5,7 @@
 ##  for read only filesystem.
 
 # -name kiwi@0.0.0.0
--setcookie 5p6zs3f364hm56663jccfqpbt7jtirdmqswquixuktrr7qmdezq4tpsti4ckvlbp
+-setcookie <%= @release.options[:cookie] %>
 
 ## Use Ctrl-C to interrupt the current shell rather than invoking the emulator's
 ## break handler and possibly exiting the VM.
