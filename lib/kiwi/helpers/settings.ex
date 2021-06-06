@@ -75,7 +75,29 @@ defmodule Kiwi.Helpers.Settings do
                 use :params_frame
             end
         end
-        at_least_one_of [:http, :led]
+        optional :obs, type: Map do
+            requires :request, type: String
+        end
+        at_least_one_of [:http, :led, :obs]
+    end
+    params :params_settings_object do
+        optional :keydown, type: Map do
+            use :params_event_action_object
+        end
+        optional :keyup, type: Map do
+            use :params_event_action_object
+        end
+        optional :obs_events, type: List do
+            requires :match, type: List do
+                requires :property, type: String
+                optional :string_value, type: String
+                optional :bool_value, type: Boolean
+                optional :int_value, type: Integer
+                exactly_one_of [:string_value, :bool_value, :int_value]
+            end
+            use :params_event_action_object
+        end
+        at_least_one_of [:keydown, :keyup, :obs_events]
     end
 
     def get_id_value_from_params(%{id: id, value: val}) do

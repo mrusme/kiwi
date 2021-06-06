@@ -31,6 +31,12 @@ defmodule Kiwi.Action do
             |> run_action_http(event, state)
         end
 
+        _pid_obs = spawn fn ->
+            event_action_object
+            |> Map.get("obs")
+            |> run_action_obs(event, state)
+        end
+
         event_action_object
         |> Map.get("led")
         |> run_action_led(event, state)
@@ -71,6 +77,20 @@ defmodule Kiwi.Action do
 
     def run_action_http(nil, _event, state) do
         Logger.debug("No http action within event action object.")
+
+        state
+    end
+
+    def run_action_obs(%{"request" => request_string}, _event, state) do
+        Logger.debug("Found OBS request within event action object, running ...")
+
+        Kiwi.OBS.send(request_string)
+
+        state
+    end
+
+    def run_action_obs(nil, _event, state) do
+        Logger.debug("No OBS request within event action object.")
 
         state
     end

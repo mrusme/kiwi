@@ -180,6 +180,20 @@ defmodule Kiwi.Collection do
                     _ -> :notfound
                 end
             end
+
+            def all_converted() do
+                case all() do
+                    {:ok, all_settings} ->
+                        converted_settings = all_settings
+                            |> Enum.map(fn one_setting ->
+                                one_setting
+                                |> Kiwi.Helpers.Settings.get_params_from_id_value()
+                            end)
+                        {:ok, converted_settings}
+                    other ->
+                        {:error, other}
+                end
+            end
         end
     end
 end

@@ -9,11 +9,11 @@ defmodule Kiwi.Api.Settings do
 
     namespace :settings do
         get do
-            case Kiwi.Collection.Setting.all() do
+            case Kiwi.Collection.Setting.all_converted() do
                 {:ok, all_settings} ->
-                    converted_settings = all_settings |> Enum.map(fn one_setting -> one_setting |> Kiwi.Helpers.Settings.get_params_from_id_value() end)
-                    conn |> resp({:ok, converted_settings})
-                other -> conn |> resp({:error, other})
+                    conn |> resp({:ok, all_settings})
+                {:error, other} ->
+                    conn |> resp({:error, other})
             end
         end
 
@@ -22,7 +22,9 @@ defmodule Kiwi.Api.Settings do
             requires :settings, type: List do
                 requires :id,     type: String
                 optional :value,  type: String
-                optional :object, type: Map
+                optional :object, type: Map do
+                    use :params_settings_object
+                end
                 exactly_one_of [:value, :object]
             end
         end
@@ -62,13 +64,7 @@ defmodule Kiwi.Api.Settings do
                 desc "Upsert Key Setting"
                 params do
                     optional :object, type: Map do
-                        optional :keydown, type: Map do
-                            use :params_event_action_object
-                        end
-                        optional :keyup, type: Map do
-                            use :params_event_action_object
-                        end
-                        at_least_one_of [:keydown, :keyup]
+                        use :params_settings_object
                     end
                 end
                 post do

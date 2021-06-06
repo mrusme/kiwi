@@ -7,6 +7,7 @@ dependencies:
 
 develop:
 	export MNESIA_DUMP_DIRECTORY=Mnesia.kiwi@$(HOSTNAME) \
+	&& export NERVES_NETWORK_OBS_SOCKET='ws://127.0.0.1:4444' \
 	&& export MIX_ENV=dev \
 	&& iex -S mix
 
