@@ -27,7 +27,7 @@ defmodule Kiwi.MixProject do
     def application do
         [
             mod: {Kiwi.Application, []},
-            extra_applications: [:logger, :runtime_tools, :mnesia],
+            extra_applications: [:logger, :runtime_tools, :mnesia, :websockex],
             # included_applications: [:mnesia]
         ]
     end
@@ -56,6 +56,7 @@ defmodule Kiwi.MixProject do
             {:jason, "~> 1.1"},
             {:corsica, "~> 1.1"},
             {:mojito, "~> 0.2"},
+            {:websockex, "~> 0.4"},
             {:nerves_time, "~> 0.2", targets: @all_targets},
 
             # Dependencies for all targets except :host

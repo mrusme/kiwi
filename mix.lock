@@ -57,4 +57,5 @@
   "telemetry": {:hex, :telemetry, "0.4.3", "a06428a514bdbc63293cd9a6263aad00ddeb66f608163bdec7c8995784080818", [:rebar3], [], "hexpm", "eb72b8365ffda5bed68a620d1da88525e326cb82a75ee61354fc24b844768041"},
   "toolshed": {:hex, :toolshed, "0.2.20", "9a9a37d1171deca9b4111205de59e4c6ba8697bd5c2ded0a160e515cbb93ff32", [:mix], [{:nerves_runtime, "~> 0.8", [hex: :nerves_runtime, repo: "hexpm", optional: true]}], "hexpm", "85934766aea2a3650db4dc0fac300f632d9b68c5a1e9101c818c1dbc3d8f724f"},
   "uboot_env": {:hex, :uboot_env, "0.3.0", "8afbcc8e5b65e5d0d5660ded2f5835a959d2326fa8683183f380cd6464e75174", [:mix], [], "hexpm", "d8fe5d2b4d52a14398ace02bd604ff7a0fa8960550bb7254f75dcbd438ddc6a1"},
+  "websockex": {:hex, :websockex, "0.4.3", "92b7905769c79c6480c02daacaca2ddd49de936d912976a4d3c923723b647bf0", [:mix], [], "hexpm", "95f2e7072b85a3a4cc385602d42115b73ce0b74a9121d0d6dbbf557645ac53e4"},
 }
