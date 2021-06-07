@@ -18,9 +18,9 @@ everything else that has an HTTP API!
 
 ## Installation
 
-- Download the latest firmware (`kiwi-VERSION.tar.gz`) from the 
+- Download the latest firmware (`kiwi.tar.gz`) from the 
   [releases page](https://github.com/mrusme/kiwi/releases/latest) and unpack 
-  it it: `tar -xzf kiwi-VERSION.tar.gz`
+  it it: `tar -xzf kiwi.tar.gz`
 - Insert the microSD card into the card reader of your computer
 - Raw-copy the firmware to your microSD card, e.g. using `dd`: 
   `sudo dd bs=1m if=./kiwi.fw of=/dev/SDCARD_DEVICE` (where `SDCARD_DEVICE` is 

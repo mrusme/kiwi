@@ -9,17 +9,17 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Prepare environment
-        run: |
-          apt install build-essential automake autoconf git squashfs-tools ssh-askpass pkg-config curl
-          curl 'https://github.com/fwup-home/fwup/releases/download/v1.8.4/fwup_1.8.4_amd64.deb' --output ./fwup_1.8.4_amd64.deb
-          dpkg -i ./fwup_1.8.4_amd64.deb
-
       - name: Get version
         id: get_version
         run: |
           export VERSION="${GITHUB_REF/refs\/tags\//}"
           echo "VERSION=$VERSION" >> $GITHUB_ENV
+
+      - name: Prepare environment
+        run: |
+          sudo apt install build-essential automake autoconf git squashfs-tools ssh-askpass pkg-config curl wget
+          wget 'https://github.com/fwup-home/fwup/releases/download/v1.8.4/fwup_1.8.4_amd64.deb'
+          sudo dpkg -i ./*.deb
 
       - uses: actions/checkout@v2
       - uses: erlef/setup-beam@v1
@@ -29,6 +29,12 @@ jobs:
 
       - name: Prepare Nerves
         run: |
+          mkdir ~/.ssh
+          cp ./id_ed25519* ~/.ssh/
+          chmod 700 ~/.ssh
+          chmod 644 ~/.ssh/id_ed25519.pub
+          chmod 600 ~/.ssh/id_ed25519
+
           mix local.hex --force
           mix local.rebar --force
           mix archive.install --force hex nerves_bootstrap
@@ -40,20 +46,18 @@ jobs:
         run: make release
 
       - name: Pack release
-        run: tar -czf ./kiwi-${VERSION}.tar.gz kiwi.fw
+        run: tar -czf ./kiwi.tar.gz kiwi.fw
 
       - name: Generate changelog
         run: |
-          export CHANGELOG=`git log $(git tag --sort=-version:refname | head -n 2 | tail -n 1)...${{ github.ref }} --pretty=format:'<li> <a href="http://github.com/mrusme/kiwi/commit/%H">view commit &bull;</a> %s</li> ' --reverse`
-          echo "CHANGELOG=$CHANGELOG" >> $GITHUB_ENV
+          git log $(git tag --sort=-version:refname | head -n 2 | tail -n 1)...${{ github.ref }} --pretty=format:'<li> <a href="http://github.com/mrusme/kiwi/commit/%H">view commit &bull;</a> %s</li> ' --reverse > ${{ github.workflow }}-CHANGELOG.txt
 
       - name: Release
         uses: softprops/action-gh-release@v1
         if: startsWith(github.ref, 'refs/tags/')
         with:
-          body: ${CHANGELOG}
+          body_path: ${{ github.workflow }}-CHANGELOG.txt
           files: |
-            kiwi-${VERSION}.tar.gz
+            kiwi.tar.gz
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          GITHUB_REPOSITORY: my_gh_org/my_gh_repo
