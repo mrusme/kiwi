@@ -24,4 +24,4 @@ sdcard:
 
 release:
 	export MIX_TARGET=rpi0 \
-	&& mix firmware.burn -d kiwi.fw
+	&& mix firmware.burn -y -d kiwi.fw

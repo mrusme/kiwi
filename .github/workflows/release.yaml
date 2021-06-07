@@ -1,0 +1,59 @@
+name: Release
+on:
+  push:
+    tags:
+      - "v[0-9]+.[0-9]+.[0-9]+"
+jobs:
+  build:
+    name: Release
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Prepare environment
+        run: |
+          apt install build-essential automake autoconf git squashfs-tools ssh-askpass pkg-config curl
+          curl 'https://github.com/fwup-home/fwup/releases/download/v1.8.4/fwup_1.8.4_amd64.deb' --output ./fwup_1.8.4_amd64.deb
+          dpkg -i ./fwup_1.8.4_amd64.deb
+
+      - name: Get version
+        id: get_version
+        run: |
+          export VERSION="${GITHUB_REF/refs\/tags\//}"
+          echo "VERSION=$VERSION" >> $GITHUB_ENV
+
+      - uses: actions/checkout@v2
+      - uses: erlef/setup-beam@v1
+        with:
+          otp-version: '23.3'
+          elixir-version: '1.12.0'
+
+      - name: Prepare Nerves
+        run: |
+          mix local.hex --force
+          mix local.rebar --force
+          mix archive.install --force hex nerves_bootstrap
+
+      - name: Install dependencies
+        run: make dependencies
+
+      - name: Build release
+        run: make release
+
+      - name: Pack release
+        run: tar -czf ./kiwi-${VERSION}.tar.gz kiwi.fw
+
+      - name: Generate changelog
+        run: |
+          export CHANGELOG=`git log $(git tag --sort=-version:refname | head -n 2 | tail -n 1)...${{ github.ref }} --pretty=format:'<li> <a href="http://github.com/mrusme/kiwi/commit/%H">view commit &bull;</a> %s</li> ' --reverse`
+          echo "CHANGELOG=$CHANGELOG" >> $GITHUB_ENV
+
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          body: ${CHANGELOG}
+          files: |
+            kiwi-${VERSION}.tar.gz
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_REPOSITORY: my_gh_org/my_gh_repo
