@@ -33,7 +33,7 @@ everything else that has an HTTP API!
 - Adjust the SSID, the PSK (and the KEY_MGMT) values according to your WiFi 
   configuration
 - If you want to control [OBS](https://obsproject.com) from Kiwi, fill 
-  `NERVES_NETWORK_OBS_SOCKET` with the URL to the OBS websocket, otherwise 
+  `NERVES_NETWORK_OBS_SOCKET` with the URL to the OBS web-socket, otherwise 
   remove the whole line
 - Save the file and unmount the partition
 - Insert the microSD card into your Keybow and connect it to a power source
@@ -47,7 +47,8 @@ As soon as you found the IP you can start configuring the device via its API.
 ## API
 
 The Kiwi API is accessible via `http://10.10.10.10:8080/` (where `10.10.10.10` 
-is the IP address of the Keybow on your WiFi).
+is the IP address of the Keybow on your WiFi). Check out the full [OpenAPI 3
+specification](https://github.com/mrusme/kiwi/blob/master/api.yaml)!
 
 > Note: All example API calls in this documentation are being performed using 
 > [`curl`](https://curl.haxx.se), as it's available for the majority of 
@@ -212,7 +213,7 @@ curl -X POST "http://10.10.10.10:8080/settings/keys/key_1_in_row_1" \
 
 As soon as the curl command returns with HTTP status code `200 OK` the key was 
 set up and its configuration stored to the Keybow's internal storage (which is 
-the micoSD card, of course). You can now press the key (the first one on the 
+the microSD card, of course). You can now press the key (the first one on the 
 top left) to run the HTTP call.
 
 However, you might have noticed, that the `http` property is not simply an 
