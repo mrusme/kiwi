@@ -1,0 +1,395 @@
+openapi: 3.0.1
+info:
+  title: Kiwi API
+  description: 'Kiwi'
+  contact:
+    email: marius@xn--gckvb8fzb.com
+  license:
+    name: GNU GPLv3
+    url: https://github.com/mrusme/kiwi/blob/master/LICENSE
+  version: 1.0.0
+externalDocs:
+  description: Find out more about Kiwi
+  url: https://mrusme.github.io/kiwi/
+servers:
+- url: http://kiwi.local
+tags:
+- name: settings
+  description: Global settings
+- name: keys
+  description: Key configurations
+- name: animations
+  description: Animation configurations
+paths:
+  /settings:
+    post:
+      tags:
+      - settings
+      summary: Bulk upsert settings
+      operationId: upsertSettings
+      requestBody:
+        description: Bulk upsert settings
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                settings:
+                  $ref: '#/components/schemas/settings'
+        required: true
+      responses:
+        200:
+          description: Successful upsert of settings
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  content:
+                    type: object
+                  timestamp:
+                    type: string
+                    format: date-time
+        400:
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  content:
+                    type: object
+                  timestamp:
+                    type: string
+                    format: date-time
+        500:
+          description: Internal error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  content:
+                    type: object
+                  timestamp:
+                    type: string
+                    format: date-time
+    get:
+      tags:
+      - settings
+      summary: List settings
+      description: List all applied settings
+      operationId: listSettings
+      responses:
+        200:
+          description: List of all settings
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  content:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/settings'
+                  timestamp:
+                    type: string
+                    format: date-time
+        500:
+          description: Internal error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  content:
+                    type: object
+                  timestamp:
+                    type: string
+                    format: date-time
+  /settings/keys:
+    get:
+      tags:
+      - keys
+      summary: List keys
+      description: List all configured keys
+      operationId: listKeys
+      responses:
+        200:
+          description: List of all keys
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  content:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/settings'
+                  timestamp:
+                    type: string
+                    format: date-time
+        500:
+          description: Internal error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  content:
+                    type: object
+                  timestamp:
+                    type: string
+                    format: date-time
+  /settings/keys/{key}:
+    get:
+      tags:
+      - keys
+      summary: Show key
+      description: Show configured key
+      operationId: showKey
+      parameters:
+      - name: key
+        in: path
+        description: Key to be shown
+        required: true
+        schema:
+          $ref: '#/components/schemas/keys-enum'
+      responses:
+        200:
+          description: Show key
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  content:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/key-config'
+                  timestamp:
+                    type: string
+                    format: date-time
+        500:
+          description: Internal error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  content:
+                    type: object
+                  timestamp:
+                    type: string
+                    format: date-time
+    post:
+      tags:
+      - keys
+      summary: Upsert key
+      description: Upsert key
+      operationId: upsertKey
+      parameters:
+      - name: key
+        in: path
+        description: Key to be upserted
+        required: true
+        schema:
+          $ref: '#/components/schemas/keys-enum'
+      requestBody:
+        description: Upsert key
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - object
+              properties:
+                object:
+                  $ref: '#/components/schemas/key-config'
+        required: true
+      responses:
+        200:
+          description: Successful upsert of key
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  content:
+                    type: object
+                  timestamp:
+                    type: string
+                    format: date-time
+        400:
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  content:
+                    type: object
+                  timestamp:
+                    type: string
+                    format: date-time
+        500:
+          description: Internal error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  content:
+                    type: object
+                  timestamp:
+                    type: string
+                    format: date-time                    
+components:
+  schemas:
+    keys:
+      type: object
+      minProperties: 1
+      properties:
+        key_1_in_row_1:
+            $ref: '#/components/schemas/key'
+        key_2_in_row_1:
+            $ref: '#/components/schemas/key'
+        key_3_in_row_1:
+            $ref: '#/components/schemas/key'
+        key_1_in_row_2:
+            $ref: '#/components/schemas/key'
+        key_2_in_row_2:
+            $ref: '#/components/schemas/key'
+        key_3_in_row_2:
+            $ref: '#/components/schemas/key'
+        key_1_in_row_3:
+            $ref: '#/components/schemas/key'
+        key_2_in_row_3:
+            $ref: '#/components/schemas/key'
+        key_3_in_row_3:
+            $ref: '#/components/schemas/key'
+        key_1_in_row_4:
+            $ref: '#/components/schemas/key'
+        key_2_in_row_4:
+            $ref: '#/components/schemas/key'
+        key_3_in_row_4:
+            $ref: '#/components/schemas/key'
+    key:
+      type: object
+      required:
+        - red
+        - green
+        - blue
+      properties:
+        brightness:
+          type: integer
+          format: uint8
+        red:
+          type: integer
+          format: uint8
+        green:
+          type: integer
+          format: uint8
+        blue:
+          type: integer
+          format: uint8
+    key-config:
+      type: object
+      minProperties: 1
+      properties:
+        keydown:
+          $ref: '#/components/schemas/event-action-object'
+        keyup:
+          $ref: '#/components/schemas/event-action-object'
+        obs_event:
+          allOf:
+            - type: object
+              properties:
+                match:
+                  type: array
+                  items:
+                    type: object
+                    required:
+                    - property
+                    minProperties: 2
+                    properties:
+                      property:
+                        type: string
+                      string_value:
+                        type: string
+                      bool_value:
+                        type: boolean
+                      int_value:
+                        type: integer
+                        format: int32
+            - $ref: '#/components/schemas/event-action-object'
+    keys-enum:
+      type: string
+      enum:
+      - key_1_in_row_1
+      - key_2_in_row_1
+      - key_3_in_row_1
+      - key_1_in_row_2
+      - key_2_in_row_2
+      - key_3_in_row_2
+      - key_1_in_row_3
+      - key_2_in_row_3
+      - key_3_in_row_3
+      - key_1_in_row_4
+      - key_2_in_row_4
+      - key_3_in_row_4
+    settings:
+      type: array
+      items:
+        type: object
+        required:
+        - id
+        - object
+        properties:
+          id:
+            $ref: '#/components/schemas/keys-enum'
+          object:
+            $ref: '#/components/schemas/key-config'
+    event-action-object:
+      type: object
+      minProperties: 1
+      properties:
+        http:
+          type: array
+          items:
+            type: object
+            required:
+            - method
+            - url
+            - headers
+            - body
+            properties:
+              method:
+                type: string
+                enum:
+                - get
+                - post
+                - put
+                - delete
+              url:
+                type: string
+              headers:
+                type: object
+              body:
+                type: string
+        obs:
+          type: object
+          required:
+          - request
+          properties:
+            request:
+              type: string
+        led:
+          type: object
+          required:
+          - frames
+          properties:
+            frames:
+              type: array
+              items:
+                $ref: '#/components/schemas/keys'
