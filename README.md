@@ -7,6 +7,9 @@ Kiwi – **K**eyboard **I**nterface for **W**ireless **I**nteraction – is a
 into a powerful wireless (WiFi) controller for Philips Hue, IFTTT, OBS and
 everything else that has an HTTP API!
 
+With Kiwi, you can turn your Pimoroni Keybow into a poor-man's Elgato Stream
+Deck!
+
 ![Kiwi](docs/kiwi.gif)
 
 ## Requirements
