@@ -12,6 +12,10 @@ max_line = 80
 [*.{md,markdown}]
 trim_trailing_whitespace = false
 
+[*.exs]
+indent_style = space
+indent_size = 2
+
 [*.{yml,yaml}]
 indent_style = space
 indent_size = 2
