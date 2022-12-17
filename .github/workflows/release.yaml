@@ -21,11 +21,11 @@ jobs:
           wget 'https://github.com/fwup-home/fwup/releases/download/v1.8.4/fwup_1.8.4_amd64.deb'
           sudo dpkg -i ./*.deb
 
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - uses: erlef/setup-beam@v1
         with:
-          otp-version: '23.3'
-          elixir-version: '1.12.0'
+          otp-version: '25'
+          elixir-version: '1.13.4'
 
       - name: Prepare Nerves
         run: |
