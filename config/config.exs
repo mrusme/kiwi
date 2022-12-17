@@ -1,19 +1,22 @@
-use Mix.Config
+import Config
+
+Application.start(:nerves_bootstrap)
 
 config :nerves, :firmware, rootfs_overlay: "rootfs_overlay"
+config :nerves, source_date_epoch: "1671295758"
 
-config :shoehorn,
-    init: [:nerves_runtime, :nerves_init_gadget],
-    app: Mix.Project.config()[:app]
+# config :shoehorn,
+#     init: [:nerves_runtime, :nerves_init_gadget],
+#     app: Mix.Project.config()[:app]
 
 node_name = if Mix.env() != :prod, do: "kiwi"
 
-config :nerves_init_gadget,
-    ifname: "wlan0",
-    address_method: :dhcpd,
-    mdns_domain: "nerves.local",
-    node_name: node_name,
-    node_host: :mdns_domain
+# config :nerves_init_gadget,
+#     ifname: "wlan0",
+#     address_method: :dhcpd,
+#     mdns_domain: "nerves.local",
+#     node_name: node_name,
+#     node_host: :mdns_domain
 
 config :kiwi, Kiwi.Server,
     adapter: Plug.Cowboy,
