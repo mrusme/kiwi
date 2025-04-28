@@ -1,0 +1,63 @@
+name: Release
+on:
+  push:
+    tags:
+      - "v[0-9]+.[0-9]+.[0-9]+"
+jobs:
+  build:
+    name: Release
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Get version
+        id: get_version
+        run: |
+          export VERSION="${GITHUB_REF/refs\/tags\//}"
+          echo "VERSION=$VERSION" >> $GITHUB_ENV
+
+      - name: Prepare environment
+        run: |
+          sudo apt install build-essential automake autoconf git squashfs-tools ssh-askpass pkg-config curl wget
+          wget 'https://github.com/fwup-home/fwup/releases/download/v1.8.4/fwup_1.8.4_amd64.deb'
+          sudo dpkg -i ./*.deb
+
+      - uses: actions/checkout@v3
+      - uses: erlef/setup-beam@v1
+        with:
+          otp-version: '25'
+          elixir-version: '1.13.4'
+
+      - name: Prepare Nerves
+        run: |
+          mkdir ~/.ssh
+          cp ./id_ed25519* ~/.ssh/
+          chmod 700 ~/.ssh
+          chmod 644 ~/.ssh/id_ed25519.pub
+          chmod 600 ~/.ssh/id_ed25519
+
+          mix local.hex --force
+          mix local.rebar --force
+          mix archive.install --force hex nerves_bootstrap
+
+      - name: Install dependencies
+        run: make dependencies
+
+      - name: Build release
+        run: make release
+
+      - name: Pack release
+        run: tar -czf ./kiwi.tar.gz kiwi.fw
+
+      - name: Generate changelog
+        run: |
+          git log $(git tag --sort=-version:refname | head -n 2 | tail -n 1)...${{ github.ref }} --pretty=format:'<li> <a href="http://github.com/mrusme/kiwi/commit/%H">view commit &bull;</a> %s</li> ' --reverse > ${{ github.workflow }}-CHANGELOG.txt
+
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          body_path: ${{ github.workflow }}-CHANGELOG.txt
+          files: |
+            kiwi.tar.gz
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -1,0 +1,23 @@
+{
+	"folders":
+	[
+		{
+            "folder_exclude_patterns":
+            [
+                "_build",
+                "deps",
+                ".elixir_ls",
+                "rootfs_overlay",
+                "Mnesia.*",
+                "mnesia_disc_dump"
+            ],
+            "file_exclude_patterns":
+            [
+                "*.fw",
+                "*.fw.zip",
+                "*.paw"
+            ],
+			"path": "."
+		}
+	]
+}
