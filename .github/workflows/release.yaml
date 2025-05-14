@@ -21,7 +21,7 @@ jobs:
           wget 'https://github.com/fwup-home/fwup/releases/download/v1.8.4/fwup_1.8.4_amd64.deb'
           sudo dpkg -i ./*.deb
 
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: erlef/setup-beam@v1
         with:
           otp-version: '25'
@@ -53,7 +53,7 @@ jobs:
           git log $(git tag --sort=-version:refname | head -n 2 | tail -n 1)...${{ github.ref }} --pretty=format:'<li> <a href="http://github.com/mrusme/kiwi/commit/%H">view commit &bull;</a> %s</li> ' --reverse > ${{ github.workflow }}-CHANGELOG.txt
 
       - name: Release
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
         if: startsWith(github.ref, 'refs/tags/')
         with:
           body_path: ${{ github.workflow }}-CHANGELOG.txt
